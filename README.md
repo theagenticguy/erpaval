@@ -43,32 +43,18 @@ learned to disk so future sessions inherit it.
 
 ## The flow
 
+The high-level shape is a six-phase pipeline gated by mechanical dependency checks, with one
+deliberate human review at Gate 1.
+
 ```mermaid
 flowchart LR
-  IN([User request]) --> SCOPE{CL-SCOPE}
-  SCOPE -->|non-coding| ROUTE[Upstream skill]
-  SCOPE -->|coding| COMPLEX{CL-COMPLEXITY}
-  COMPLEX -->|1-file fix| DIRECT[Direct fix]
-  COMPLEX -->|multi-module\nor rebuild| RESUME{CL-RESUME}
-  RESUME -->|new| NEW[erpaval-new.py]
-  RESUME -->|resume| LOAD[Load prior session]
-  NEW & LOAD --> DIR{CL-DIR}
-  DIR --> RIGOR{CL-RIGOR}
-  RIGOR -.->|fuzzy| HMW[HMW frame]
-  RIGOR -.->|contract unclear| EARS[EARS spec]
-  HMW --> EARS
-  EARS --> ER
-  RIGOR -->|crisp| ER
-  ER[Explore + Research] --> G0{Gate 0}
-  G0 --> PLAN[Plan]
-  PLAN --> G1{Gate 1\nhuman review}
-  G1 -.->|revise| PLAN
-  G1 --> ACT[Act · waves]
+  IN([User request]) --> CL[Classifiers]
+  CL --> ER[Explore +<br/>Research]
+  ER -->|Gate 0| PLAN[Plan]
+  PLAN -->|Gate 1<br/>human review| ACT[Act · waves]
   ACT --> VAL[Validate]
-  VAL -.->|fail C4| ACT
-  VAL --> G2{Gate 2}
-  G2 --> MERGE[Merge]
-  MERGE --> COMP[Compound]
+  VAL -.->|fail| ACT
+  VAL -->|Gate 2| COMP[Compound]
   COMP --> DONE([Done])
 ```
 
@@ -92,6 +78,24 @@ design-review checkpoint. Catching a wrong abstraction here saves hours of agent
 
 ERPAVal never runs its full machinery on a one-line bug fix. Before Explore starts, a chain of
 classifiers decides which phases apply.
+
+```mermaid
+flowchart LR
+  IN([User request]) --> SCOPE{CL-SCOPE}
+  SCOPE -->|non-coding| ROUTE[Upstream skill]
+  SCOPE -->|coding| COMPLEX{CL-COMPLEXITY}
+  COMPLEX -->|1-file fix| DIRECT[Direct fix]
+  COMPLEX -->|multi-module<br/>or rebuild| RESUME{CL-RESUME}
+  RESUME -->|new| NEW[erpaval-new.py]
+  RESUME -->|resume| LOAD[Load prior session]
+  NEW & LOAD --> DIR{CL-DIR}
+  DIR --> RIGOR{CL-RIGOR}
+  RIGOR -.->|fuzzy| HMW[HMW substep]
+  RIGOR -.->|contract<br/>unclear| EARS[EARS substep]
+  HMW --> EARS
+  EARS --> ER([Explore + Research])
+  RIGOR -->|crisp| ER
+```
 
 | Classifier        | Decision                                       | Effect                                                                   |
 | ----------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
@@ -129,6 +133,16 @@ Two tool calls run before any phase.
 
 ### Explore + Research (parallel)
 
+```mermaid
+flowchart LR
+  START([Intake done]) --> FORK{ }
+  FORK --> EXP[Explore agent<br/>structure · patterns · DI]
+  FORK --> RES[Research agent<br/>Context7 · DeepWiki · web]
+  EXP --> JOIN{Gate 0}
+  RES --> JOIN
+  JOIN --> PLAN([Plan])
+```
+
 **Explore** answers: what does this codebase look like, and where do my changes land?
 
 A dedicated exploration agent reads project structure, traces module boundaries, and catalogs
@@ -144,6 +158,16 @@ Both run in parallel — different questions, no data dependency on each other.
 ---
 
 ### Plan
+
+```mermaid
+flowchart LR
+  G0([Gate 0]) --> DRAFT[Draft task graph<br/>1 task per AC]
+  DRAFT --> WAVES[Group into waves<br/>wire dependencies]
+  WAVES --> CRIT[Mechanical success<br/>criteria per task]
+  CRIT --> G1{Gate 1<br/>human review}
+  G1 -.->|revise| DRAFT
+  G1 --> ACT([Act])
+```
 
 The single most consequential artifact in the flow.
 
@@ -172,6 +196,21 @@ architecture review, not a rubber stamp.
 ---
 
 ### Act
+
+```mermaid
+flowchart LR
+  G1([Gate 1]) --> SPAWN[Spawn subagents<br/>per ready task]
+  SPAWN --> WORK[Edit packet<br/>section-by-section]
+  WORK --> WC[Orchestrator<br/>watches with wc -l]
+  WC -->|stuck| C2{CL-C2}
+  C2 -->|fix-directly| WORK
+  C2 -->|respawn| SPAWN
+  C2 -->|missing-prereq| REPLAN[Insert prereq · re-wire]
+  REPLAN --> SPAWN
+  WC -->|done| UNBLOCK[Eager unblock<br/>downstream tasks]
+  UNBLOCK --> SPAWN
+  UNBLOCK -->|all complete| VAL([Validate])
+```
 
 Each task becomes a delegation to a subagent with a **context packet** — a complete, zero-context
 briefing that is also the agent's running work log.
@@ -207,6 +246,20 @@ packet), or `missing-prereq` (insert a prereq task, re-wire the dependency graph
 
 ### Validate
 
+```mermaid
+flowchart LR
+  ACT([Act done]) --> L1[Layer 1<br/>static checks]
+  L1 -->|fail| FIX[Scoped fix packets]
+  L1 -->|pass| L2[Layer 2<br/>code quality review]
+  L2 -->|fail| FIX
+  L2 -->|pass| L3[Layer 3<br/>security scan]
+  L3 -->|fail| FIX
+  FIX -.->|cycle ≤ 3| ACT
+  FIX -.->|cycle 4| PLAN([Back to Plan])
+  L3 -->|pass| G2{Gate 2}
+  G2 --> COMP([Compound])
+```
+
 Three layers, in order:
 
 **Layer 1 — Static checks.** The project's existing toolchain: `ruff check` + `ruff format` +
@@ -234,6 +287,18 @@ fourth signals a plan structural problem — return to Plan.
 ---
 
 ### Compound
+
+```mermaid
+flowchart LR
+  G2([Gate 2]) --> MERGE[Merge]
+  MERGE --> CLL{CL-LESSONS}
+  CLL --> BUG[Bug-track candidates]
+  CLL --> KNOW[Knowledge-track candidates]
+  BUG & KNOW --> FILTER{Novel +<br/>reusable?}
+  FILTER -->|no| DONE([Done])
+  FILTER -->|yes| WRITE[.erpaval/solutions/<br/>category/slug.md]
+  WRITE --> DONE
+```
 
 The phase most methodologies forget.
 
