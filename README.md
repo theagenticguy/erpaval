@@ -400,9 +400,17 @@ git commit -am "chore: resync $SKILL from upstream"
 
 ## Knowledge work in ERPAVal
 
-Most of what people use Claude for isn't shipping code — it's **knowledge work**. Drafting a PRD. Synthesizing customer interviews. Writing a strategy memo. Building a slide deck. Reviewing a design. Modeling a spreadsheet. Storyboarding a customer journey. Designing an agent's UX. Writing a video script. Authoring a Model Context Protocol (MCP) server. Auditing a prompt. Running a literature review. Triaging an inbox.
+Plenty of Claude Code work is **knowledge work**, not coding: drafting a PRD, synthesizing customer
+interviews, writing a strategy memo, building a slide deck, reviewing a design, modeling a
+spreadsheet, storyboarding a customer journey, designing an agent's UX, writing a video script,
+authoring a Model Context Protocol (MCP) server, auditing a prompt, running a literature review,
+triaging an inbox.
 
-ERPAVal's `CL-SCOPE` classifier recognizes this and triages knowledge work to upstream skills instead of forcing it through the coding pipeline. The bundle covers the most common ones — `/product-discovery`, `/product-strategy`, `/research`, `/working-backwards`, `/customer-research`, `/meta-prompt-optimizer`. The rest of the surface is enormous, and most of it is well-suited to specialized skills with their own write-protocols, role prompts, and templates.
+ERPAVal's `CL-SCOPE` classifier triages knowledge work to upstream skills instead of forcing it
+through the coding pipeline. The bundle covers the common ones — `/product-discovery`,
+`/product-strategy`, `/research`, `/working-backwards`, `/customer-research`,
+`/meta-prompt-optimizer`. Other knowledge-work tasks have specialized skills with their own write
+protocols, role prompts, and templates.
 
 Many of those skills live in [`personal-plugins`](https://github.com/lalsaado/personal-plugins) — install alongside ERPAVal or fork into your own bundle. ERPAVal won't break if a route resolves to a missing skill — Claude will tell you, and you can either install the companion or do the work directly.
 
