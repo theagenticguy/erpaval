@@ -1,5 +1,7 @@
 # ERPAVal
 
+![ERPAVal banner](assets/erpavalbanner_1280x640.png)
+
 **Adaptive autonomous software development for Claude Code.**
 
 ERPAVal stands for **Explore · Research · Plan · Act · Val**idate — the five-phase loop, plus a sixth **Compound** phase that writes durable lessons to disk so the next session inherits what this one learned.
