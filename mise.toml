@@ -1,0 +1,54 @@
+min_version = "2025.1.0"
+
+[tools]
+node = "22"
+"npm:markdownlint-cli2" = "0.17"
+"npm:dprint" = "latest"
+
+[tasks.fmt]
+description = "Format all markdown and JSON files"
+run = "dprint fmt"
+
+[tasks."fmt:check"]
+description = "Check formatting (no write)"
+run = "dprint check"
+
+[tasks."lint:md"]
+description = "Lint markdown files"
+run = "markdownlint-cli2 'skills/**/*.md' 'agents/*.md'"
+
+[tasks."lint:md:fix"]
+description = "Lint markdown with auto-fix"
+run = "markdownlint-cli2 --fix 'skills/**/*.md' 'agents/*.md'"
+
+[tasks.lint]
+description = "Run all linters"
+depends = ["lint:md"]
+
+[tasks.bump]
+description = "Bump plugin version (usage: mise run bump -- <major|minor|patch>)"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+level="${1:-patch}"
+file=".claude-plugin/plugin.json"
+current=$(jq -r '.version' "$file")
+IFS='.' read -r major minor patch <<< "$current"
+case "$level" in
+  major) major=$((major+1)); minor=0; patch=0 ;;
+  minor) minor=$((minor+1)); patch=0 ;;
+  patch) patch=$((patch+1)) ;;
+  *) echo "Usage: mise run bump -- <major|minor|patch>"; exit 1 ;;
+esac
+new="$major.$minor.$patch"
+jq --arg v "$new" '.version = $v' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+echo "bumped $current → $new"
+"""
+
+[tasks.validate]
+description = "Validate plugin: configs parse, tools/hooks load, named cross-reference invariants"
+run = "bash scripts/validate-plugin.sh"
+
+[tasks.build]
+description = "Full build: lint + format check + validate"
+depends = ["lint", "fmt:check", "validate"]

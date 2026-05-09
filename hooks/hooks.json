@@ -1,0 +1,41 @@
+{
+  "description": "ERPAVal hooks: bootstrap prior-lesson summary at session start, validate .erpaval packets on write, nudge Compound at Stop. All fail-open via framework.run_hook.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session_start_bootstrap.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate_packet.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/compound_nudge.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

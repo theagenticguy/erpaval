@@ -1,0 +1,6 @@
+applicable_lessons:
+  - path: .erpaval/solutions/<category>/<slug>.md
+    track: knowledge      # or bug
+    relevance: HIGH       # HIGH | MEDIUM | LOW
+    matched_on: [tags.<tag>, module.<path>]
+injection_strategy: include_in_all_act_packets

@@ -1,0 +1,9 @@
+lessons_written:
+  - path: .erpaval/solutions/<category>/<slug>.md
+    track: bug                # bug | knowledge
+    category: <category>
+    severity: medium          # low | medium | high | critical | info
+    reason_captured: |
+      <why this lesson is worth persisting>
+claude_md_updated: true
+index_md_updated: true

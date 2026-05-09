@@ -1,0 +1,40 @@
+# Markdown lint configuration for erpaval-plugin
+config:
+  # Use ATX-style headings (#)
+  heading-style:
+    style: atx
+
+  # Disable line length — dprint handles wrapping
+  line-length: false
+
+  # Allow multiple top-level headings (SKILL.md has frontmatter + # heading)
+  single-h1: false
+
+  # Consistent unordered list markers
+  ul-style:
+    style: dash
+
+  # No trailing spaces
+  no-trailing-spaces: true
+
+  # Allow inline HTML (role files use <example> tags)
+  no-inline-html: false
+
+  # Allow bold text as section labels
+  no-emphasis-as-heading: false
+
+  # Allow duplicate headings (reference docs repeat common section names)
+  no-duplicate-heading: false
+
+  # Allow files to start without h1 (reference sub-documents)
+  first-line-heading: false
+
+  # Allow heading level increments > 1 (templates may start at h3)
+  heading-increment: false
+
+  # YAML frontmatter awareness
+  front-matter: null
+
+globs:
+  - "skills/**/*.md"
+  - "agents/*.md"

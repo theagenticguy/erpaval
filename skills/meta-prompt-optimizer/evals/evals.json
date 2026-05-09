@@ -1,0 +1,190 @@
+{
+  "skill_name": "meta-prompt-optimizer",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-and-rewrite-claude-md",
+      "prompt": "I wrote this CLAUDE.md for a Python project a while back and Claude seems to ignore half of it. Can you audit it and rewrite it to work well on Opus 4.7?",
+      "files": ["evals/fixtures/bad-claude-md.md"],
+      "expected_output": "Structured audit + rewrite: CLAUDE.md under 200 lines, negatives flipped to positives, shouting dialed back, deprecated params removed, {date} cache-breaker handled, self-evident filler cut, motivation added to non-obvious rules.",
+      "assertions": [
+        {
+          "name": "Audit report present",
+          "check": "Output contains a structured audit with rubric categories (directness/framing/structure/type-specific)"
+        },
+        {
+          "name": "Rewritten file under 200 lines",
+          "check": "The rewritten CLAUDE.md file is under 200 lines"
+        },
+        {
+          "name": "Deprecated params removed",
+          "check": "Rewritten prompt does not mention 'budget_tokens' or 'temperature=0' (either removed or replaced with adaptive thinking / effort guidance)"
+        },
+        {
+          "name": "Shouting dialed back",
+          "check": "Rewritten prompt has fewer than 3 instances of all-caps shouting words (CRITICAL/NEVER/MUST/ALWAYS/ABSOLUTELY) compared to original's 20+"
+        },
+        {
+          "name": "Negatives reduced",
+          "check": "Ratio of negative constructions ('Don't', 'NEVER', 'avoid') to positive imperatives is meaningfully lower in rewrite vs original"
+        },
+        {
+          "name": "Self-evident filler cut",
+          "check": "Rewrite does not contain 'Be helpful', 'Be accurate', 'Think carefully', 'Write clean code' (all present in original)"
+        },
+        {
+          "name": "Cache invalidator handled",
+          "check": "The {date} interpolation from original is either removed, explained, or noted — not copied verbatim"
+        },
+        {
+          "name": "Changelog present",
+          "check": "Report includes a changelog mapping changes to rubric items or principles"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "audit-and-rewrite-agent",
+      "prompt": "Review this Claude Code agent definition and tell me what's wrong with it, then rewrite it so it actually triggers correctly and performs well.",
+      "files": ["evals/fixtures/bad-agent.md"],
+      "expected_output": "Audit flags vague description, missing examples, tool bloat, shouting, deprecated params, filler rules. Rewrite has specific description, 2-3 <example> blocks, trimmed tools.",
+      "assertions": [
+        {
+          "name": "Audit flags vague description",
+          "check": "Audit explicitly identifies the description ('A powerful assistant') as too vague to trigger correctly"
+        },
+        {
+          "name": "Audit flags missing examples",
+          "check": "Audit identifies that the agent lacks <example> blocks (whenToUse) which are the primary triggering mechanism"
+        },
+        {
+          "name": "Audit flags tool bloat",
+          "check": "Audit questions whether WebSearch/WebFetch/Task are needed for a code-helper agent"
+        },
+        {
+          "name": "Rewrite has specific description",
+          "check": "Rewritten description includes specific trigger phrases and when-to-use context, not just 'a powerful assistant'"
+        },
+        {
+          "name": "Rewrite has example blocks",
+          "check": "Rewritten agent has at least 2 <example> blocks in whenToUse"
+        },
+        {
+          "name": "Deprecated params removed",
+          "check": "Rewritten agent does not mention budget_tokens or temperature=0"
+        },
+        {
+          "name": "Shouting reduced",
+          "check": "Rewritten agent has fewer than 3 instances of CRITICAL/MUST/NEVER/ALWAYS/ABSOLUTELY"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "audit-jinja-caching",
+      "prompt": "We're using this Jinja2 template as the system prompt for a caching-enabled Anthropic API app, but our cache hit rate is basically zero. Can you audit it? Do not rewrite yet — just tell me what's broken.",
+      "files": ["evals/fixtures/bad-jinja-template.j2"],
+      "expected_output": "Audit-only output identifying silent cache invalidators in the cached region and rubric failures specific to Jinja2 templates.",
+      "assertions": [
+        {
+          "name": "Identifies now() as cache breaker",
+          "check": "Audit explicitly calls out {{ now() }} or {{ now().strftime(...) }} as a per-request cache invalidator"
+        },
+        {
+          "name": "Identifies session_id/request_id as cache breakers",
+          "check": "Audit calls out session_id, request_id, or user.id appearing early in the template as invalidators"
+        },
+        {
+          "name": "Identifies session history iteration",
+          "check": "Audit notes that {% for q in session.history %} changes per-request and invalidates cache"
+        },
+        {
+          "name": "Identifies iteration ordering risk",
+          "check": "Audit notes that iterating over user.enabled_features (possibly unordered set) or available_tools can produce non-deterministic output"
+        },
+        {
+          "name": "No rewrite produced",
+          "check": "Output stays in audit mode — does not produce a full rewritten template"
+        },
+        {
+          "name": "Flags shouting",
+          "check": "Audit identifies 'ALWAYS'/'NEVER'/'MUST' as over-triggering language"
+        },
+        {
+          "name": "Structured rubric output",
+          "check": "Audit uses the rubric categories (or equivalent structured scoring), not just prose"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "rewrite-zod-tools",
+      "prompt": "These Zod tool descriptions are way too terse and the model keeps picking the wrong tool. Rewrite them per Opus 4.7 best practices.",
+      "files": ["evals/fixtures/bad-zod-tools.ts"],
+      "expected_output": "Each tool description answers what/when/params. Parameter descriptions are specific. Filler removed. Length stays short (1-3 sentences per tool).",
+      "assertions": [
+        {
+          "name": "Tool descriptions answer when-to-use",
+          "check": "Rewritten descriptions include 'when' context (disambiguating from other tools), not just 'what the tool does'"
+        },
+        {
+          "name": "Parameter descriptions specific",
+          "check": "Rewritten parameter descriptions are longer than one word and describe purpose or example values"
+        },
+        {
+          "name": "Enum values explained",
+          "check": "Rewritten create_item sort/type enums and delete_item force parameter have semantic meaning explained"
+        },
+        {
+          "name": "Filler removed",
+          "check": "Rewrite does not contain 'A function that' or 'This function is used to' constructions"
+        },
+        {
+          "name": "Stays concise",
+          "check": "Each tool description is 1-3 sentences — not bloated into paragraphs"
+        },
+        {
+          "name": "Valid TypeScript",
+          "check": "Rewritten .ts file is syntactically valid TypeScript (parseable imports, valid z.object syntax)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "audit-and-rewrite-system-prompt",
+      "prompt": "Here's a system prompt I drafted for a customer support bot. Audit it and improve it.",
+      "files": ["evals/fixtures/okayish-system-prompt.txt"],
+      "expected_output": "Audit catches shouting, deprecated params, guess-and-ship anti-pattern, friendly/upsell tension. Rewrite fixes these.",
+      "assertions": [
+        {
+          "name": "Audit flags deprecated params",
+          "check": "Audit identifies budget_tokens and/or temperature=0 as deprecated/removed on Opus 4.7"
+        },
+        {
+          "name": "Audit flags guess anti-pattern",
+          "check": "Audit identifies 'just make your best guess' as problematic (teaches hallucination)"
+        },
+        {
+          "name": "Audit identifies tension",
+          "check": "Audit notes the tension between 'be friendly/professional' and 'try to upsell'"
+        },
+        {
+          "name": "Rewrite removes guess-and-ship",
+          "check": "Rewritten prompt replaces 'make your best guess' with 'ask the user' or 'say you don't know'"
+        },
+        {
+          "name": "Rewrite removes deprecated params",
+          "check": "Rewritten prompt does not mention budget_tokens or temperature"
+        },
+        {
+          "name": "Shouting reduced",
+          "check": "Rewritten prompt has fewer than 3 instances of CRITICAL/MUST/NEVER/ALWAYS/ABSOLUTELY"
+        },
+        {
+          "name": "Changelog present",
+          "check": "Report includes a changelog showing what changed and why"
+        }
+      ]
+    }
+  ]
+}

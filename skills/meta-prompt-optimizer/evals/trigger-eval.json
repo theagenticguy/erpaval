@@ -1,0 +1,82 @@
+[
+  {
+    "query": "ok so I've got this CLAUDE.md in ~/work/acme-api that keeps ballooning past 300 lines and half the rules seem to get ignored — can you take a look and tell me whats wrong with it and fix it up?",
+    "should_trigger": true
+  },
+  {
+    "query": "review my system prompt. it's in prompts/support_bot.jinja2. cache hit rate is basically 0 and I'm paying full tokens every call even tho the prefix should be stable",
+    "should_trigger": true
+  },
+  {
+    "query": "we're migrating our agent configs from sonnet 3.7 to opus 4.7 — can you go through the agents/ folder and rewrite each one per the new best practices? focus on ~/Projects/revenue-agents/agents/",
+    "should_trigger": true
+  },
+  {
+    "query": "these Zod tool schemas (src/tools/*.ts) have descriptions like 'Does the thing.' and the model keeps calling the wrong one, particularly search_orders vs get_order. rewrite the descriptions so claude picks correctly",
+    "should_trigger": true
+  },
+  {
+    "query": "critique this prompt: 'You are a helpful assistant. CRITICAL: always think step by step. NEVER give wrong answers. You MUST be thorough.' — is this any good or is it too shouty?",
+    "should_trigger": true
+  },
+  {
+    "query": "draft a SKILL.md for a new skill that helps users audit their Slack bot prompts — I want it to trigger on 'review my slack bot', 'check slack app prompt', things like that",
+    "should_trigger": true
+  },
+  {
+    "query": "my agent at .claude/agents/code-reviewer.md isn't triggering when I say 'review this PR' — why might that be? the description says 'Use for code reviews.'",
+    "should_trigger": true
+  },
+  {
+    "query": "I've got a pydantic class for a tool input, the Field descriptions are one-word like 'The query' and 'The limit', model is picking random values. fix em",
+    "should_trigger": true
+  },
+  {
+    "query": "score this system prompt against opus 4.7 best practices — focus on whether the uncertainty handling section is right. I have it as 'if you don't know, just say you don't know' but that feels wrong",
+    "should_trigger": true
+  },
+  {
+    "query": "I'm writing a system prompt for a legal document review bot — there's no existing prompt yet, can you draft one from scratch that follows 4.7 best practices? main job: flag missing clauses and date inconsistencies in contracts",
+    "should_trigger": true
+  },
+  {
+    "query": "can you help me debug why our customer support agent is over-using tools? It's calling search 5 times per turn even for simple questions like 'hi'",
+    "should_trigger": false
+  },
+  {
+    "query": "my claude code session keeps hitting rate limits — is there a way to batch my requests or pay for higher limits?",
+    "should_trigger": false
+  },
+  {
+    "query": "write me a python script that uses the anthropic SDK to call opus 4.7 with adaptive thinking and streaming. should take a file path and summarize the contents",
+    "should_trigger": false
+  },
+  {
+    "query": "explain how prompt caching works in the Anthropic API — what's the minimum cacheable prefix size and does it work with tool use?",
+    "should_trigger": false
+  },
+  {
+    "query": "I have a CLAUDE.md that's working great — can you show me what's in it? it's at ~/.claude/CLAUDE.md",
+    "should_trigger": false
+  },
+  {
+    "query": "agent dispatch isn't working in my project — when I type /security-review it says the command isn't found. plugin.json has it listed though",
+    "should_trigger": false
+  },
+  {
+    "query": "what's the difference between a skill and an agent in claude code? and when should I use which?",
+    "should_trigger": false
+  },
+  {
+    "query": "can you translate this English system prompt to Japanese while keeping the structure? it's a customer support prompt for our JP market launch",
+    "should_trigger": false
+  },
+  {
+    "query": "convert this python function that validates tool inputs to typescript with zod schemas — same validation rules, just different syntax",
+    "should_trigger": false
+  },
+  {
+    "query": "help me write a PRD for a new feature that lets users tune their agent's system prompt via a UI slider between 'terse' and 'verbose'",
+    "should_trigger": false
+  }
+]
