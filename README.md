@@ -82,7 +82,7 @@ classifiers decides which phases apply.
 ```mermaid
 flowchart LR
   IN([User request]) --> SCOPE{CL-SCOPE}
-  SCOPE -->|non-coding| ROUTE[Upstream skill]
+  SCOPE -->|knowledge work| ROUTE[Upstream skill]
   SCOPE -->|coding| COMPLEX{CL-COMPLEXITY}
   COMPLEX -->|1-file fix| DIRECT[Direct fix]
   COMPLEX -->|multi-module<br/>or rebuild| RESUME{CL-RESUME}
@@ -99,7 +99,7 @@ flowchart LR
 
 | Classifier        | Decision                                       | Effect                                                                   |
 | ----------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
-| **CL-SCOPE**      | Coding task?                                   | Non-coding routes to a research or PRD-writing skill                     |
+| **CL-SCOPE**      | Coding or knowledge work?                      | Knowledge work routes to an upstream skill (research, PRD, strategy, …)  |
 | **CL-COMPLEXITY** | 1-file fix, multi-module, or rip-and-replace?  | 1-file skips ERPAVal entirely                                            |
 | **CL-RESUME**     | New session or resume a prior one?             | New scaffolds `session-<hex>/`; resume reads prior state and continues   |
 | **CL-DIR**        | Empty dir, existing code, or rebuild-in-place? | Empty skips Explore; rebuild explores both existing and target patterns  |
@@ -392,11 +392,13 @@ git commit -am "chore: resync $SKILL from upstream"
 
 ---
 
-## Non-coding work in ERPAVal
+## Knowledge work in ERPAVal
 
-ERPAVal's `CL-SCOPE` classifier triages non-coding asks to upstream skills. The bundle covers the most common ones — `/product-discovery`, `/product-strategy`, `/research`, `/working-backwards`, `/customer-research`, `/meta-prompt-optimizer`. A thousand other tasks live outside that surface: slide decks, video scripts, internal narratives, design reviews, customer storyboards, data exploration, Excel modeling, agent UX design, frontend builds, MCP server authoring, and more.
+Most of what people use Claude for isn't shipping code — it's **knowledge work**. Drafting a PRD. Synthesizing customer interviews. Writing a strategy memo. Building a slide deck. Reviewing a design. Modeling a spreadsheet. Storyboarding a customer journey. Designing an agent's UX. Writing a video script. Authoring an MCP server. Auditing a prompt. Running a literature review. Triaging an inbox.
 
-Many of those have skills in [`personal-plugins`](https://github.com/lalsaado/personal-plugins) you can install alongside this plugin, or fork into your own bundle. ERPAVal won't break if a route resolves to a missing skill — Claude will tell you, and you can either install the companion or do the work directly.
+ERPAVal's `CL-SCOPE` classifier recognizes this and triages knowledge work to upstream skills instead of forcing it through the coding pipeline. The bundle covers the most common ones — `/product-discovery`, `/product-strategy`, `/research`, `/working-backwards`, `/customer-research`, `/meta-prompt-optimizer`. The rest of the surface is enormous, and most of it is well-suited to specialized skills with their own write-protocols, role prompts, and templates.
+
+Many of those skills live in [`personal-plugins`](https://github.com/lalsaado/personal-plugins) — install alongside ERPAVal or fork into your own bundle. ERPAVal won't break if a route resolves to a missing skill — Claude will tell you, and you can either install the companion or do the work directly.
 
 ---
 
