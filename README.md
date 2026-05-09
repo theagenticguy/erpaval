@@ -99,7 +99,7 @@ flowchart LR
 
 | Classifier        | Decision                                       | Effect                                                                   |
 | ----------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
-| **CL-SCOPE**      | Coding task?                                   | Non-coding routes to a research, PRD-writing, or presentation skill      |
+| **CL-SCOPE**      | Coding task?                                   | Non-coding routes to a research or PRD-writing skill                     |
 | **CL-COMPLEXITY** | 1-file fix, multi-module, or rip-and-replace?  | 1-file skips ERPAVal entirely                                            |
 | **CL-RESUME**     | New session or resume a prior one?             | New scaffolds `session-<hex>/`; resume reads prior state and continues   |
 | **CL-DIR**        | Empty dir, existing code, or rebuild-in-place? | Empty skips Explore; rebuild explores both existing and target patterns  |
