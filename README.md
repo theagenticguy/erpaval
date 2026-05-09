@@ -79,7 +79,8 @@ design-review checkpoint. Catching a wrong abstraction here saves hours of agent
 ## Before the phases: adaptive classifiers
 
 ERPAVal never runs its full machinery on a one-line bug fix. Before Explore starts, a chain of
-classifiers decides which phases apply.
+classifiers — labelled `CL-*` so they're easy to grep in the session trace — decides which phases
+apply.
 
 ```mermaid
 flowchart LR
@@ -92,8 +93,8 @@ flowchart LR
   RESUME -->|resume| LOAD[Load prior session]
   NEW & LOAD --> DIR{CL-DIR}
   DIR --> RIGOR{CL-RIGOR}
-  RIGOR -.->|fuzzy| HMW[HMW substep<br/>How Might We]
-  RIGOR -.->|contract<br/>unclear| EARS[EARS substep<br/>Easy Approach to<br/>Requirements Syntax]
+  RIGOR -.->|fuzzy| HMW[How Might We<br/>HMW substep]
+  RIGOR -.->|contract<br/>unclear| EARS[Easy Approach to<br/>Requirements Syntax<br/>EARS substep]
   HMW --> EARS
   EARS --> ER([Explore + Research])
   RIGOR -->|crisp| ER
@@ -101,12 +102,12 @@ flowchart LR
 
 | Classifier        | Decision                                       | Effect                                                                   |
 | ----------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
-| **CL-SCOPE**      | Coding or knowledge work?                      | Knowledge work routes to an upstream skill (research, PRD, strategy, …)  |
+| **CL-SCOPE**      | Coding or knowledge work?                      | Knowledge work routes to an upstream skill (research, Product Requirements Doc (PRD), strategy, …) |
 | **CL-COMPLEXITY** | 1-file fix, multi-module, or rip-and-replace?  | 1-file skips ERPAVal entirely                                            |
 | **CL-RESUME**     | New session or resume a prior one?             | New scaffolds `session-<hex>/`; resume reads prior state and continues   |
 | **CL-DIR**        | Empty dir, existing code, or rebuild-in-place? | Empty skips Explore; rebuild explores both existing and target patterns  |
-| **CL-RIGOR**      | Crisp problem, or needs HMW / EARS framing?    | Fuzzy → How Might We substep; contract-unclear → Easy Approach to Requirements Syntax substep; crisp → skip both |
-| **CL-SPEC**       | Product Requirements Doc (PRD), stack, and concept ready? | Missing prerequisites loop through `product-discovery` and `build-stack` |
+| **CL-RIGOR**      | Crisp problem, or needs HMW / EARS framing?    | Fuzzy → HMW substep; contract-unclear → EARS substep; crisp → skip both  |
+| **CL-SPEC**       | PRD, stack, and concept ready?                 | Missing prerequisites loop through `product-discovery` and `build-stack` |
 | **CL-VALIDATE**   | All 3 validation layers green?                 | Failure routes back to Act with scoped fix packets                       |
 | **CL-LESSONS**    | Novel, reusable learnings this session?        | Yes → write to `.erpaval/solutions/`; no → skip                          |
 
@@ -138,7 +139,7 @@ Two tool calls run before any phase.
 ```mermaid
 flowchart LR
   START([Intake done]) --> FORK{ }
-  FORK --> EXP[Explore agent<br/>structure · patterns ·<br/>dependency injection]
+  FORK --> EXP[Explore agent<br/>structure · patterns · DI]
   FORK --> RES[Research agent<br/>Context7 · DeepWiki · web]
   EXP --> JOIN{Gate 0}
   RES --> JOIN
@@ -148,7 +149,8 @@ flowchart LR
 **Explore** answers: what does this codebase look like, and where do my changes land?
 
 A dedicated exploration agent reads project structure, traces module boundaries, and catalogs
-patterns — error handling, dependency injection (DI), logging, test style, build toolchain, lint config. Output is a
+patterns — error handling, dependency injection (DI), logging, test style, build toolchain, lint
+config. Output is a
 structured summary that becomes the *conventions* section every implementing agent receives.
 
 **Research** fixes the staleness problem. A code-researcher agent fetches current documentation via
@@ -163,7 +165,7 @@ Both run in parallel — different questions, no data dependency on each other.
 
 ```mermaid
 flowchart LR
-  G0([Gate 0]) --> DRAFT[Draft task graph<br/>1 task per AC]
+  G0([Gate 0]) --> DRAFT[Draft task graph<br/>1 task per acceptance<br/>criterion AC]
   DRAFT --> WAVES[Group into waves<br/>wire dependencies]
   WAVES --> CRIT[Mechanical success<br/>criteria per task]
   CRIT --> G1{Gate 1<br/>human review}
@@ -175,8 +177,8 @@ The single most consequential artifact in the flow.
 
 Planning decomposes the implementation into atomic tasks, each completable by a single agent in
 isolation, grouped into waves with explicit dependency edges. When intake included an EARS spec, the
-plan derives one task per acceptance criterion — the AC's `[P]` parallel-safe flag carries forward
-so the orchestrator can launch safe tasks concurrently.
+plan derives one task per acceptance criterion (AC) — the AC's `[P]` parallel-safe flag carries
+forward so the orchestrator can launch safe tasks concurrently.
 
 ```
 Wave 1 (parallel):
@@ -278,12 +280,12 @@ Agent tight loop:            CI loose loop:
 ```
 
 **Layer 2 — Code quality review.** Dedicated Opus agent analyzes the diff for tech-debt creep,
-Don't-Repeat-Yourself (DRY) violations, dead code, convention drift, and API surface issues static
+Don't Repeat Yourself (DRY) violations, dead code, convention drift, and API surface issues static
 tools miss.
 
-**Layer 3 — Security scanning.** Semgrep against the OWASP (Open Worldwide Application Security
-Project) Top 10, language-specific tools (bandit, npm audit), dependency vulnerability checks, and
-an Opus-powered review for logic flaws.
+**Layer 3 — Security scanning.** Semgrep Open Worldwide Application Security Project (OWASP) Top
+10, language-specific tools (bandit, npm audit), dependency vulnerability checks, and an
+Opus-powered review for logic flaws.
 
 Any failure loops back to Act with scoped fix packets on just the failing tasks. Max 3 fix cycles; a
 fourth signals a plan structural problem — return to Plan.
@@ -370,16 +372,16 @@ This plugin ships the `erpaval` methodology plus 10 vendored companion skills so
 | Skill                   | Role in ERPAVal                                                                        |
 | ----------------------- | -------------------------------------------------------------------------------------- |
 | `erpaval`               | The methodology — six phases, classifiers, hooks, tools                                |
-| `product-discovery`     | How Might We + Easy Approach to Requirements Syntax substeps (hard file-load dep); discovery memos, Jobs-To-Be-Done (JTBD), INVEST user stories |
+| `product-discovery`     | HMW + EARS substeps (hard file-load dep); discovery memos, Jobs-To-Be-Done (JTBD), INVEST user stories |
 | `research`              | Multi-agent research; the file-first write protocol erpaval is adapted from            |
 | `ultraplan`             | Generator-critic planning; the parallel-explorer pattern erpaval references            |
 | `tech-stack-builder`    | `CL-SPEC → /build-stack` route for greenfield stack selection                          |
-| `product-strategy`      | `CL-SCOPE → /product-strategy` route (Rumelt, Wardley, Minto, PR-FAQ — Press Release / Frequently Asked Questions — as discovery) |
+| `product-strategy`      | `CL-SCOPE → /product-strategy` route (Rumelt, Wardley, Minto, Press Release / FAQ (PR-FAQ) as discovery) |
 | `working-backwards`     | 5-stage Working Backwards / PR-FAQ / 5 Customer Questions (5CQ)                        |
 | `customer-research`     | Hypothesis + null + Mutually Exclusive Collectively Exhaustive (MECE) + findings; Pyramid-base output for downstream composition |
 | `meta-prompt-optimizer` | Prompt audit + rewrite; the prompt-quality companion                                   |
 | `product-design-shared` | Canonical methodology references shared by discovery / strategy / working-backwards    |
-| `agent-ux-patterns`     | Agent user experience patterns (Agent-to-Human handoff, Levels of Autonomy, inbox, progressive trust) — referenced by discovery |
+| `agent-ux-patterns`     | Agent UX patterns (Agent-to-Human (A2H) handoff, Levels of Autonomy, inbox, progressive trust) — referenced by discovery |
 
 ### Re-sync a vendored skill from upstream
 
@@ -398,7 +400,7 @@ git commit -am "chore: resync $SKILL from upstream"
 
 ## Knowledge work in ERPAVal
 
-Most of what people use Claude for isn't shipping code — it's **knowledge work**. Drafting a Product Requirements Doc. Synthesizing customer interviews. Writing a strategy memo. Building a slide deck. Reviewing a design. Modeling a spreadsheet. Storyboarding a customer journey. Designing an agent's user experience. Writing a video script. Authoring a Model Context Protocol (MCP) server. Auditing a prompt. Running a literature review. Triaging an inbox.
+Most of what people use Claude for isn't shipping code — it's **knowledge work**. Drafting a PRD. Synthesizing customer interviews. Writing a strategy memo. Building a slide deck. Reviewing a design. Modeling a spreadsheet. Storyboarding a customer journey. Designing an agent's UX. Writing a video script. Authoring a Model Context Protocol (MCP) server. Auditing a prompt. Running a literature review. Triaging an inbox.
 
 ERPAVal's `CL-SCOPE` classifier recognizes this and triages knowledge work to upstream skills instead of forcing it through the coding pipeline. The bundle covers the most common ones — `/product-discovery`, `/product-strategy`, `/research`, `/working-backwards`, `/customer-research`, `/meta-prompt-optimizer`. The rest of the surface is enormous, and most of it is well-suited to specialized skills with their own write-protocols, role prompts, and templates.
 
@@ -523,12 +525,13 @@ exception logs to stderr and exits 0, so a broken hook cannot wedge a session.
 **HMW (fuzzy problems):** reframes a vague or solution-shaped ask into 3–5 outcome-level
 "How Might We" questions using 3 of 9 d.school strategies, validated against Nielsen Norman Group
 (NN/g) guardrails.
+
 Output seeds `brainstorms/NNN-<slug>-requirements.md`.
 
 **EARS (contract-unclear tasks):** Easy Approach to Requirements Syntax. Writes numbered,
-dependency-annotated acceptance criteria using the 5 EARS templates (Ubiquitous, Event-driven,
-State-driven, Optional feature, Unwanted behavior). Each acceptance criterion (AC) carries `[P]`
-(parallel-safe) or `Dependencies: AC-X-Y`. Plan derives one task per AC directly. Output seeds
+dependency-annotated ACs using the 5 EARS templates (Ubiquitous, Event-driven, State-driven,
+Optional feature, Unwanted behavior). Each AC carries `[P]` (parallel-safe) or
+`Dependencies: AC-X-Y`. Plan derives one task per AC directly. Output seeds
 `specs/NNN-<slug>/spec.md`.
 
 Both substeps are well-suited to subagent delegation — bounded creative tasks with durable file
