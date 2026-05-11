@@ -13,14 +13,14 @@ description: >
 
 ## Contents
 
-| File                      | Path                                                                                   | When to load                                            |
-| ------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Canonical WB reference    | `${CLAUDE_PLUGIN_ROOT}/skills/product-design-shared/references/working-backwards.md`   | 5-stage process, artifacts, principles, common pitfalls |
-| Pyramid composition       | `${CLAUDE_PLUGIN_ROOT}/skills/product-design-shared/references/pyramid-principle.md`   | PR as Pyramid top, FAQ as antagonist test               |
-| Research design           | `${CLAUDE_PLUGIN_ROOT}/skills/product-design-shared/references/research-design.md`     | Listen-stage hypothesis + MECE sub-questions            |
-| PR/FAQ authoring workflow | `references/prfaq-authoring.md`                                                        | Drafting workflow: 5CQ → PR → FAQ → visuals             |
-| Customer-insights role    | `references/roles/customer-insights.md`                                                | Researcher-agent role for Listen synthesis              |
-| 5CQ worksheet             | `templates/5cq-worksheet.md`                                                           | Fill-in-the-blank for the 5 Customer Questions          |
+| File                      | Path                                                                                 | When to load                                            |
+| ------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| Canonical WB reference    | `${CLAUDE_PLUGIN_ROOT}/skills/product-design-shared/references/working-backwards.md` | 5-stage process, artifacts, principles, common pitfalls |
+| Pyramid composition       | `${CLAUDE_PLUGIN_ROOT}/skills/product-design-shared/references/pyramid-principle.md` | PR as Pyramid top, FAQ as antagonist test               |
+| Research design           | `${CLAUDE_PLUGIN_ROOT}/skills/product-design-shared/references/research-design.md`   | Listen-stage hypothesis + MECE sub-questions            |
+| PR/FAQ authoring workflow | `references/prfaq-authoring.md`                                                      | Drafting workflow: 5CQ → PR → FAQ → visuals             |
+| Customer-insights role    | `references/roles/customer-insights.md`                                              | Researcher-agent role for Listen synthesis              |
+| 5CQ worksheet             | `templates/5cq-worksheet.md`                                                         | Fill-in-the-blank for the 5 Customer Questions          |
 
 # Working Backwards
 

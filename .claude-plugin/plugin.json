@@ -1,21 +1,24 @@
 {
   "name": "erpaval",
   "version": "1.1.0",
-  "description": "ERPAVal — adaptive autonomous software development for Claude Code. Comprehensive standalone bundle: the erpaval methodology plus 10 vendored companion skills (product-discovery, research, ultraplan, tech-stack-builder, product-strategy, working-backwards, customer-research, meta-prompt-optimizer, product-design-shared, agent-ux-patterns) so the six-phase Explore/Research/Plan/Act/Validate/Compound loop routes resolve out of the box. Designed to be forked.",
+  "description": "ERPAVal — autonomous software development workflow for Claude Code. Comprehensive standalone bundle: the erpaval workflow plus 10 vendored companion skills (product-discovery, research, ultraplan, tech-stack-builder, product-strategy, working-backwards, customer-research, meta-prompt-optimizer, product-design-shared, agent-ux-patterns) so the six-phase Explore/Research/Plan/Act/Validate/Compound loop routes resolve out of the box. Designed to be forked.",
   "author": {
     "name": "Laith Al-Saadoon"
   },
+  "homepage": "https://github.com/theagenticguy/erpaval",
+  "repository": "https://github.com/theagenticguy/erpaval",
   "license": "MIT",
   "keywords": [
     "autonomous-dev",
+    "agentic-engineering",
     "agent-driven-development",
-    "erpaval",
-    "compound-engineering",
-    "task-decomposition",
+    "agent-engineering",
+    "claude-code",
+    "claude-code-plugin",
     "ears-spec",
     "hmw",
+    "subagents",
     "validation",
-    "lessons",
-    "claude-code"
+    "lessons"
   ]
 }

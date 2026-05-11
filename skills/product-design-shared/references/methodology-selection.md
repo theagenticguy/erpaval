@@ -79,25 +79,25 @@ You do not always need every step:
 
 ## By audience
 
-| Audience                                         | Primary discipline           | Secondary                    |
-| ------------------------------------------------ | ---------------------------- | ---------------------------- |
-| Leadership (PR/FAQ review, executive memo)       | Working Backwards            | Pyramid (for composition)    |
-| External design-led stakeholders                 | Double Diamond               | Pyramid (for the final deck) |
-| Engineering team (need to implement)             | `skills/product-discovery/`  | Working Backwards upstream   |
-| Mixed audience — executive + designer + engineer | Pyramid + WB chain           | DD as translation anchor     |
+| Audience                                         | Primary discipline          | Secondary                    |
+| ------------------------------------------------ | --------------------------- | ---------------------------- |
+| Leadership (PR/FAQ review, executive memo)       | Working Backwards           | Pyramid (for composition)    |
+| External design-led stakeholders                 | Double Diamond              | Pyramid (for the final deck) |
+| Engineering team (need to implement)             | `skills/product-discovery/` | Working Backwards upstream   |
+| Mixed audience — executive + designer + engineer | Pyramid + WB chain          | DD as translation anchor     |
 
 ## By artifact
 
 | Artifact             | Primary composition discipline             | Typical upstream                           |
 | -------------------- | ------------------------------------------ | ------------------------------------------ |
-| PR/FAQ                  | Pyramid (PR = top; FAQ = antagonist test)  | Working Backwards Listen + Define          |
-| Long-form narrative     | Pyramid                                    | research-design if claim-heavy             |
-| Dear Customer Letter    | Pyramid (5-paragraph form)                 | Working Backwards Refine                   |
-| 5 Customer Questions    | Pyramid (mini — Q1–Q4 = base, Q5 = answer) | Working Backwards Listen                   |
-| Slide deck              | Pyramid via SCQA                           | Any of the above                           |
-| Storyboard              | Pyramid via SCQA (visual)                  | Working Backwards Refine                   |
-| PRD                     | Pyramid at the exec summary                | Working Backwards Define + research-design |
-| Customer journey map    | MECE decomposition from research-design    | Working Backwards Listen                   |
+| PR/FAQ               | Pyramid (PR = top; FAQ = antagonist test)  | Working Backwards Listen + Define          |
+| Long-form narrative  | Pyramid                                    | research-design if claim-heavy             |
+| Dear Customer Letter | Pyramid (5-paragraph form)                 | Working Backwards Refine                   |
+| 5 Customer Questions | Pyramid (mini — Q1–Q4 = base, Q5 = answer) | Working Backwards Listen                   |
+| Slide deck           | Pyramid via SCQA                           | Any of the above                           |
+| Storyboard           | Pyramid via SCQA (visual)                  | Working Backwards Refine                   |
+| PRD                  | Pyramid at the exec summary                | Working Backwards Define + research-design |
+| Customer journey map | MECE decomposition from research-design    | Working Backwards Listen                   |
 
 ## Anti-patterns
 

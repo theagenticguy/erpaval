@@ -113,13 +113,13 @@ Describe how customers would discover and use your solution. Sketch the experien
 
 Once the 5CQ is filled in and feels tight, decide:
 
-| Confidence in answers                                   | Next step                                                                                                           |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| All five answers are strong and you need wide alignment | Escalate to a full PR/FAQ — use `skills/working-backwards/references/prfaq-authoring.md`                            |
-| All five answers are strong and the work is small       | Ship the 5CQ as-is; skip the PR/FAQ                                                                                 |
-| Q4 is weak (evidence gap)                               | Run `skills/customer-research/` with the hypothesis from Q4 before continuing                                       |
-| Q1 or Q2 feels vague                                    | Go back to Listen — interview more customers before naming benefits                                                 |
-| Q3 keeps shifting                                       | That is the signal the solution is not yet clear — try a storyboard to force concreteness                          |
+| Confidence in answers                                   | Next step                                                                                 |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| All five answers are strong and you need wide alignment | Escalate to a full PR/FAQ — use `skills/working-backwards/references/prfaq-authoring.md`  |
+| All five answers are strong and the work is small       | Ship the 5CQ as-is; skip the PR/FAQ                                                       |
+| Q4 is weak (evidence gap)                               | Run `skills/customer-research/` with the hypothesis from Q4 before continuing             |
+| Q1 or Q2 feels vague                                    | Go back to Listen — interview more customers before naming benefits                       |
+| Q3 keeps shifting                                       | That is the signal the solution is not yet clear — try a storyboard to force concreteness |
 
 ## Anti-patterns
 

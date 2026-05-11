@@ -35,6 +35,10 @@ config:
   # YAML frontmatter awareness
   front-matter: null
 
+  # Allow blank lines inside blockquotes — GitHub-flavored "[!NOTE]" / "[!IMPORTANT]"
+  # callouts read more cleanly when separated by blank lines.
+  no-blanks-blockquote: false
+
 globs:
   - "skills/**/*.md"
   - "agents/*.md"

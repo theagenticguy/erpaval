@@ -87,7 +87,7 @@ Post-2019 the Council added a **Systemic Design Framework** for wicked problems 
 | Solution-space depth       | Large (Diamond 2: Develop + Deliver)              | Invent stage is brief; Refine pins to customer-visible CX        |
 | Iteration posture          | Implicit — "iterate" added as a principle in 2019 | Explicit — process is circular, Stage 5 feeds Stage 1            |
 | Stakeholder alignment      | Weak in base; added in 2019 engagement layer      | First-class: PR/FAQ reviews *are* the alignment mechanism        |
-| Metrics / launch           | "Deliver" ends near launch                        | Stage 5 + experimentation + post-launch quality scorecard       |
+| Metrics / launch           | "Deliver" ends near launch                        | Stage 5 + experimentation + post-launch quality scorecard        |
 | Customer-research pipeline | Methods bank (abstract)                           | Concrete VoC tooling per organization                            |
 
 ### vs other design-thinking variants

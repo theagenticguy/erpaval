@@ -58,12 +58,12 @@ After filling the pieces above, assemble into the canonical form:
 
 List the data points that ground each element. Source from `research-plan.md` findings.
 
-| Element                        | Evidence                                         | Source                       |
-| ------------------------------ | ------------------------------------------------ | ---------------------------- |
-| Customer segment is real       | [e.g., 17.2MM households per USDA 2019]          | [USDA Food Desert study]     |
+| Element                        | Evidence                                         | Source                        |
+| ------------------------------ | ------------------------------------------------ | ----------------------------- |
+| Customer segment is real       | [e.g., 17.2MM households per USDA 2019]          | [USDA Food Desert study]      |
 | Problem is widespread          | [e.g., 42% funnel drop at the image step]        | [feedback dashboard, Q1 data] |
-| Problem is felt                | [e.g., 7 of 12 interviewed volunteered the pain] | [Interviews P01-P12]         |
-| Current workarounds are costly | [e.g., average detour = 12 miles round trip]     | [Census geo + seller survey] |
+| Problem is felt                | [e.g., 7 of 12 interviewed volunteered the pain] | [Interviews P01-P12]          |
+| Current workarounds are costly | [e.g., average detour = 12 miles round trip]     | [Census geo + seller survey]  |
 
 Cite specific sources. Mark `[NEEDS DATA]` where evidence is missing — do not fabricate.
 

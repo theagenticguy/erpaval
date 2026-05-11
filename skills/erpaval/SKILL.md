@@ -1,7 +1,7 @@
 ---
 name: erpaval
 description: >
-  Adaptive methodology for autonomous software development with Claude Code.
+  Workflow for autonomous software development with Claude Code.
   Classifiers route scope, complexity, directory state, and spec readiness
   before committing to Explore / Research / Plan / Act / Validate, then
   close the loop with a Compound step that persists lessons to
@@ -38,7 +38,7 @@ description: >
 
 # ERPAVal — adaptive autonomous software development
 
-A six-phase methodology with two framing substeps and a compounding tail. The orchestrator (main Claude Code session) runs classifiers to decide which phases apply, delegates implementation to subagents, and persists Markdown + YAML packets under `.erpaval/` so future sessions start smarter than this one.
+A six-phase workflow with two framing substeps and a compounding tail. The orchestrator (main Claude Code session) runs classifiers to decide which phases apply, delegates implementation to subagents, and persists Markdown + YAML packets under `.erpaval/` so future sessions start smarter than this one.
 
 ## The graph at a glance
 
@@ -123,14 +123,17 @@ Skip both when the ask names a specific user segment, an observable outcome with
 
 ## Phase summary
 
-| Phase        | Purpose                                 | Execution method                         | Parallelizable with  |
-| ------------ | --------------------------------------- | ---------------------------------------- | -------------------- |
-| **Explore**  | Build mental model of the codebase      | `Agent` tool (`Explore` subagent)        | Research             |
-| **Research** | Fetch live API docs, versions, patterns | `Agent` tool (`researcher`)              | Explore              |
-| **Plan**     | Derive tasks from EARS spec + deps      | Orchestrator + `TaskCreate`/`TaskUpdate` | None (needs E+R)     |
-| **Act**      | Implement via parallel `Agent` calls    | `Agent` tool with `run_in_background`    | Per dependency graph |
-| **Validate** | Verify correctness, quality, security   | `Agent` tool (Opus) + static tools       | Partially            |
-| **Compound** | Extract lessons from session            | Orchestrator + `compound.md` procedure   | None (post-merge)    |
+| Phase        | Purpose                                 | Execution method                                                         | Parallelizable with  |
+| ------------ | --------------------------------------- | ------------------------------------------------------------------------ | -------------------- |
+| **Explore**  | Build mental model of the codebase      | Parallel `Agent` (`Explore` subagents — split by module, single message) | Research             |
+| **Research** | Fetch live API docs, versions, patterns | Parallel `Agent` (`researcher` — split by domain, single message)        | Explore              |
+| **Plan**     | Derive tasks from EARS spec + deps      | Orchestrator + `TaskCreate`/`TaskUpdate`                                 | None (needs E+R)     |
+| **Act**      | Implement via parallel `Agent` calls    | One message per wave, all tasks in `run_in_background=true`              | Per dependency graph |
+| **Validate** | Verify correctness, quality, security   | `Agent` tool (Opus) + static tools                                       | Partially            |
+| **Compound** | Extract lessons from session            | Orchestrator + `compound.md` procedure                                   | None (post-merge)    |
+
+> Research agents start with `date +"%Y-%m-%d"` (always) and `context7` (for library/API/SDK lookups).
+> Default recency window is the last 6 months — agentic-AI libraries change monthly.
 
 ## When to use ERPAVal
 

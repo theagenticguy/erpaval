@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "erpaval",
+  "owner": {
+    "name": "Laith Al-Saadoon",
+    "url": "https://github.com/theagenticguy"
+  },
+  "metadata": {
+    "description": "ERPAVal — autonomous software development workflow for Claude Code.",
+    "version": "1.1.0"
+  },
+  "plugins": [
+    {
+      "name": "erpaval",
+      "source": "./",
+      "description": "Six-phase Explore/Research/Plan/Act/Validate/Compound workflow with classifier-driven routing and a compounding lessons store.",
+      "version": "1.1.0",
+      "author": { "name": "Laith Al-Saadoon" },
+      "homepage": "https://github.com/theagenticguy/erpaval",
+      "repository": "https://github.com/theagenticguy/erpaval",
+      "license": "MIT",
+      "category": "development",
+      "tags": ["workflow", "agentic-engineering", "claude-code", "subagents"],
+      "keywords": [
+        "autonomous-dev",
+        "agentic-engineering",
+        "agent-driven-development",
+        "agent-engineering",
+        "claude-code",
+        "claude-code-plugin",
+        "subagents",
+        "ears-spec",
+        "hmw"
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@ fail() { echo "FAIL: $*" >&2; exit 1; }
 ok()   { echo "  ok: $*"; }
 
 echo "[1/3] Configs parse"
-for f in .claude-plugin/plugin.json .mcp.json hooks/hooks.json; do
+for f in .claude-plugin/plugin.json .claude-plugin/marketplace.json .mcp.json hooks/hooks.json; do
   python3 -c "import json; json.load(open('$f'))" || fail "JSON parse: $f"
   ok "$f"
 done
@@ -20,7 +20,7 @@ for tool in skills/erpaval/tools/erpaval-new.py skills/erpaval/tools/erpaval-rec
   uv run "$tool" --help >/dev/null 2>&1 || fail "tool --help: $tool"
   ok "$tool --help"
 done
-for hook in hooks/validate_packet.py hooks/compound_nudge.py hooks/session_start_bootstrap.py; do
+for hook in hooks/framework.py hooks/validate_packet.py hooks/compound_nudge.py hooks/session_start_bootstrap.py; do
   python3 -c "import ast; ast.parse(open('$hook').read())" || fail "AST parse: $hook"
   ok "$hook ast"
 done
@@ -45,5 +45,11 @@ if grep -rEn 'subagent_type:\s*"?[a-z-]+:[a-z-]+' skills/ agents/ 2>/dev/null; t
   fail "I3: subagent_type uses namespaced name (expected bare)"
 fi
 ok "I3 (subagent_type uses bare names)"
+
+# I4: marketplace plugin version stays in sync with plugin.json
+PLUGIN_VER=$(jq -r '.version' .claude-plugin/plugin.json)
+MARKET_VER=$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)
+[ "$PLUGIN_VER" = "$MARKET_VER" ] || fail "I4: plugin.json version=$PLUGIN_VER but marketplace.json plugins[0].version=$MARKET_VER"
+ok "I4 (plugin/marketplace versions aligned: $PLUGIN_VER)"
 
 echo "PASS: erpaval-plugin validates"

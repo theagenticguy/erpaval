@@ -6,14 +6,14 @@ Companion to `${CLAUDE_PLUGIN_ROOT}/skills/product-design-shared/references/rese
 
 The research-design method requires you to pick a method per MECE sub-question. Questions have shapes; methods have shapes; match them.
 
-| Question type          | What it asks                                              | Best methods                                                                        | Wrong fit                                             |
-| ---------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| **Behavioral**         | What are customers doing?                                 | Funnel analytics, session replay, A/B test, event logs                              | Interviews (self-report is unreliable for behavior)   |
-| **Attitudinal**        | Why are they doing it? What do they feel?                 | 1:1 interviews, open-ended surveys, support-ticket thematic coding, diary studies   | Analytics alone (can't explain *why*)                 |
-| **Pain-point texture** | How does the friction feel? Emotional weight?             | Ethnography, Gemba walks, empathy mapping, diary studies                            | Closed-ended surveys (flatten the texture)            |
-| **Segmentation**       | Who is affected? How does behavior differ across cohorts? | Cohort analysis, persona-based research, stratified surveys                         | Interviews alone (sample too small for cohort claims) |
-| **Scale**              | How common is this problem?                               | Quantitative survey (large-N), site-wide analytics, industry benchmarks             | Interviews (can show pattern but not scale)           |
-| **Causal**             | Does changing X move Y?                                   | A/B test, quasi-experiment with controls, before/after with counterfactual          | Correlation from analytics (confounds; never enough)  |
+| Question type          | What it asks                                              | Best methods                                                                      | Wrong fit                                             |
+| ---------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **Behavioral**         | What are customers doing?                                 | Funnel analytics, session replay, A/B test, event logs                            | Interviews (self-report is unreliable for behavior)   |
+| **Attitudinal**        | Why are they doing it? What do they feel?                 | 1:1 interviews, open-ended surveys, support-ticket thematic coding, diary studies | Analytics alone (can't explain *why*)                 |
+| **Pain-point texture** | How does the friction feel? Emotional weight?             | Ethnography, Gemba walks, empathy mapping, diary studies                          | Closed-ended surveys (flatten the texture)            |
+| **Segmentation**       | Who is affected? How does behavior differ across cohorts? | Cohort analysis, persona-based research, stratified surveys                       | Interviews alone (sample too small for cohort claims) |
+| **Scale**              | How common is this problem?                               | Quantitative survey (large-N), site-wide analytics, industry benchmarks           | Interviews (can show pattern but not scale)           |
+| **Causal**             | Does changing X move Y?                                   | A/B test, quasi-experiment with controls, before/after with counterfactual        | Correlation from analytics (confounds; never enough)  |
 
 **Rule of thumb**: mix at least two methods across the plan. Interviews alone produce beautiful stories that don't scale; analytics alone miss the human texture that explains the numbers.
 
@@ -109,7 +109,7 @@ This skill is methodology-first. Plug in whatever VoC resources your team has â€
 | Live-call listening       | Hearing real customer calls in context        |
 | Feedback aggregation      | Search + visualize all customer feedback data |
 | User research community   | Methods, studies, prior research              |
-| Accessibility recruitment | Studies with accessibility-focused panels    |
+| Accessibility recruitment | Studies with accessibility-focused panels     |
 | Diary-study platforms     | Mobile research, longitudinal observation     |
 | Usability-test platforms  | Recruited testing at scale                    |
 | Gemba / floor walks       | Direct observation of work in context         |

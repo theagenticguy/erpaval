@@ -2,7 +2,7 @@
 
 ![ERPAVal banner](assets/erpavalbanner_1280x640.png)
 
-**Adaptive autonomous software development for Claude Code.**
+**Autonomous software development for Claude Code.**
 
 ERPAVal stands for **Explore · Research · Plan · Act · Val**idate — the five-phase loop, plus a sixth **Compound** phase that writes durable lessons to disk so the next session inherits what this one learned.
 
@@ -18,11 +18,79 @@ Six phases, classifier-driven routing, and a compounding memory layer that makes
 
 > [!IMPORTANT]
 > **Star → Fork → make it your own.** ERPAVal is opinionated about coding workflow but agnostic
-> about everything else. The bundle gives you a working flow on day one, but the methodology is
+> about everything else. The bundle gives you a working flow on day one, but the workflow is
 > designed to absorb your conventions, your team's writing style, your domain's vocabulary. Fork
 > this repo, vendor in your own skills, swap out the ones that don't fit, rewrite the classifier
 > prompts to match how you think. Re-syncing from upstream `personal-plugins` is intentionally
 > manual — users who fork should diverge.
+
+---
+
+## Install
+
+ERPAVal is a Claude Code plugin. There are two ways to install it.
+
+### Option A — Claude Code plugin marketplace (recommended)
+
+Ships everything: skills, agents, hooks, and MCP server config.
+
+In a Claude Code session, run:
+
+```text
+/plugin marketplace add theagenticguy/erpaval
+/plugin install erpaval@erpaval
+```
+
+Adding a marketplace is lazy — nothing loads until you install. The plugin installs to your **user**
+scope (available in every project) by default. To scope it to one project instead, use
+`/plugin install erpaval@erpaval --scope project`.
+
+Then enable the plugin and reload so its skills, agents, and hooks activate:
+
+```text
+/plugin            # → Installed tab → erpaval → Enable
+/reload-plugins
+```
+
+Verify by listing skills:
+
+```text
+/help              # /erpaval:* should appear in the namespace
+```
+
+To uninstall:
+
+```text
+/plugin uninstall erpaval
+/plugin marketplace remove theagenticguy/erpaval
+```
+
+> [!NOTE]
+> If `/plugin marketplace add` reports "not found", update Claude Code to a recent version
+> (`v2.1.x` or later) and retry.
+
+### Option B — `skills.sh` CLI (skills only, multi-agent)
+
+[skills.sh](https://skills.sh) is the open agent-skills directory. Its CLI installs the **skills**
+to whichever coding agents you have locally — Claude Code, Cursor, Codex, Windsurf, and ~50 others.
+It does **not** install the hooks, agents, or MCP server config that the plugin marketplace ships.
+
+```bash
+npx skills add theagenticguy/erpaval
+```
+
+Use this path if you want ERPAVal's skills available across multiple agents. Use Option A if you
+want the full Claude Code experience (compounding lessons, validation hooks, the Compound-phase
+nudge).
+
+### Option C — Local development install
+
+To hack on the plugin without going through either:
+
+```bash
+git clone https://github.com/theagenticguy/erpaval
+claude --plugin-dir ./erpaval
+```
 
 ---
 
@@ -102,16 +170,16 @@ flowchart LR
   RIGOR -->|crisp| ER
 ```
 
-| Classifier        | Decision                                       | Effect                                                                   |
-| ----------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
+| Classifier        | Decision                                       | Effect                                                                                             |
+| ----------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | **CL-SCOPE**      | Coding or knowledge work?                      | Knowledge work routes to an upstream skill (research, Product Requirements Doc (PRD), strategy, …) |
-| **CL-COMPLEXITY** | 1-file fix, multi-module, or rip-and-replace?  | 1-file skips ERPAVal entirely                                            |
-| **CL-RESUME**     | New session or resume a prior one?             | New scaffolds `session-<hex>/`; resume reads prior state and continues   |
-| **CL-DIR**        | Empty dir, existing code, or rebuild-in-place? | Empty skips Explore; rebuild explores both existing and target patterns  |
-| **CL-RIGOR**      | Crisp problem, or needs HMW / EARS framing?    | Fuzzy → HMW substep; contract-unclear → EARS substep; crisp → skip both  |
-| **CL-SPEC**       | PRD, stack, and concept ready?                 | Missing prerequisites loop through `product-discovery` and `build-stack` |
-| **CL-VALIDATE**   | All 3 validation layers green?                 | Failure routes back to Act with scoped fix packets                       |
-| **CL-LESSONS**    | Novel, reusable learnings this session?        | Yes → write to `.erpaval/solutions/`; no → skip                          |
+| **CL-COMPLEXITY** | 1-file fix, multi-module, or rip-and-replace?  | 1-file skips ERPAVal entirely                                                                      |
+| **CL-RESUME**     | New session or resume a prior one?             | New scaffolds `session-<hex>/`; resume reads prior state and continues                             |
+| **CL-DIR**        | Empty dir, existing code, or rebuild-in-place? | Empty skips Explore; rebuild explores both existing and target patterns                            |
+| **CL-RIGOR**      | Crisp problem, or needs HMW / EARS framing?    | Fuzzy → HMW substep; contract-unclear → EARS substep; crisp → skip both                            |
+| **CL-SPEC**       | PRD, stack, and concept ready?                 | Missing prerequisites loop through `product-discovery` and `build-stack`                           |
+| **CL-VALIDATE**   | All 3 validation layers green?                 | Failure routes back to Act with scoped fix packets                                                 |
+| **CL-LESSONS**    | Novel, reusable learnings this session?        | Yes → write to `.erpaval/solutions/`; no → skip                                                    |
 
 Every verdict appends to `classifier_trace` in the session YAML — routing decisions are auditable
 after the fact. Claude judges; the user never picks from a menu.
@@ -182,7 +250,7 @@ isolation, grouped into waves with explicit dependency edges. When intake includ
 plan derives one task per acceptance criterion (AC) — the AC's `[P]` parallel-safe flag carries
 forward so the orchestrator can launch safe tasks concurrently.
 
-```
+```text
 Wave 1 (parallel):
   Task A: Create data models       → blocks C, D
   Task B: Add API route stubs      → blocks D
@@ -272,7 +340,7 @@ Three layers, in order:
 `pytest` for Python; `pnpm lint` + `tsc` + `pnpm test` for TypeScript. Sub-second lint, sub-minute
 type checking.
 
-```
+```text
 Agent tight loop:            CI loose loop:
   write → lint (0.3s)          write → push → wait (60–300s)
   → fix → lint (0.3s)          → get error → re-read code
@@ -308,7 +376,7 @@ flowchart LR
   WRITE --> DONE
 ```
 
-The phase most methodologies forget.
+The phase most autonomous-coding workflows forget.
 
 After Gate 2 clears and work merges, `CL-LESSONS` reads the full session trace and identifies
 candidates on two tracks:
@@ -332,7 +400,7 @@ top-scoring lessons directly into every task's *Prior lessons* section.
 
 ## The `.erpaval/` directory
 
-```
+```text
 .erpaval/
   INDEX.md                    ← committed — category summary, pointer from CLAUDE.md
   solutions/                  ← committed — durable lessons
@@ -369,21 +437,25 @@ ephemeral — orchestrator-coupled and a secrets surface.
 
 ## Bundled skills
 
-This plugin ships the `erpaval` methodology plus 10 vendored companion skills so that ERPAVal's classifier routes resolve in-bundle. Bundled skills are sanitized forks — narrative-writing helpers (long-form prose composition, organization-specific Legal review, publication formatting) are deliberately not bundled. Fork this repo to drop in your team's writing-style skill.
+This plugin ships the core `erpaval` workflow plus 10 vendored companion skills so that ERPAVal's classifier routes resolve in-bundle. Bundled skills are sanitized forks — narrative-writing helpers (long-form prose composition, organization-specific Legal review, publication formatting) are deliberately not bundled. Fork this repo to drop in your team's writing-style skill.
 
-| Skill                   | Role in ERPAVal                                                                        |
-| ----------------------- | -------------------------------------------------------------------------------------- |
-| `erpaval`               | The methodology — six phases, classifiers, hooks, tools                                |
-| `product-discovery`     | HMW + EARS substeps (hard file-load dep); discovery memos, Jobs-To-Be-Done (JTBD), INVEST user stories |
-| `research`              | Multi-agent research; the file-first write protocol erpaval is adapted from            |
-| `ultraplan`             | Generator-critic planning; the parallel-explorer pattern erpaval references            |
-| `tech-stack-builder`    | `CL-SPEC → /build-stack` route for greenfield stack selection                          |
-| `product-strategy`      | `CL-SCOPE → /product-strategy` route (Rumelt, Wardley, Minto, Press Release / FAQ (PR-FAQ) as discovery) |
-| `working-backwards`     | 5-stage Working Backwards / PR-FAQ / 5 Customer Questions (5CQ)                        |
+> The bundled `product-discovery` and `agent-ux-patterns` skills both describe their own six-phase
+> flows. They are unrelated to ERPAVal's six phases — different problems, different artifacts,
+> different cadence.
+
+| Skill                   | Role in ERPAVal                                                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `erpaval`               | The workflow — six phases, classifiers, hooks, tools                                                                             |
+| `product-discovery`     | HMW + EARS substeps (hard file-load dep); discovery memos, Jobs-To-Be-Done (JTBD), INVEST user stories                           |
+| `research`              | Multi-agent research; the file-first write protocol erpaval is adapted from                                                      |
+| `ultraplan`             | Generator-critic planning; the parallel-explorer pattern erpaval references                                                      |
+| `tech-stack-builder`    | `CL-SPEC → /build-stack` route for greenfield stack selection                                                                    |
+| `product-strategy`      | `CL-SCOPE → /product-strategy` route (Rumelt, Wardley, Minto, Press Release / FAQ (PR-FAQ) as discovery)                         |
+| `working-backwards`     | 5-stage Working Backwards / PR-FAQ / 5 Customer Questions (5CQ)                                                                  |
 | `customer-research`     | Hypothesis + null + Mutually Exclusive Collectively Exhaustive (MECE) + findings; Pyramid-base output for downstream composition |
-| `meta-prompt-optimizer` | Prompt audit + rewrite; the prompt-quality companion                                   |
-| `product-design-shared` | Canonical methodology references shared by discovery / strategy / working-backwards    |
-| `agent-ux-patterns`     | Agent UX patterns (Agent-to-Human (A2H) handoff, Levels of Autonomy, inbox, progressive trust) — referenced by discovery |
+| `meta-prompt-optimizer` | Prompt audit + rewrite; the prompt-quality companion                                                                             |
+| `product-design-shared` | Canonical framework references shared by discovery / strategy / working-backwards                                                |
+| `agent-ux-patterns`     | Agent UX patterns (Agent-to-Human (A2H) handoff, Levels of Autonomy, inbox, progressive trust) — referenced by discovery         |
 
 ### Re-sync a vendored skill from upstream
 
@@ -422,18 +494,19 @@ Many of those skills live in [`personal-plugins`](https://github.com/lalsaado/pe
 
 The plugin's `.mcp.json` declares four research servers used by `agents/researcher.md`. Set the env vars below to enable them — without keys, the servers fail at session start (`deepwiki` works without a key) and the researcher agent falls back to `WebFetch` / `WebSearch` per its **Provider availability and fallbacks** table.
 
-| Server          | Env var              | Source                                |
-| --------------- | -------------------- | ------------------------------------- |
-| `context7`      | `CONTEXT7_API_KEY`   | <https://context7.com>                |
-| `brave-search`  | `BRAVE_API_KEY`      | <https://api-dashboard.search.brave.com> |
-| `exa`           | `EXA_API_KEY`        | <https://dashboard.exa.ai>            |
-| `deepwiki`      | (none)               | hosted, no key required               |
+| Server         | Env var            | Source                                   |
+| -------------- | ------------------ | ---------------------------------------- |
+| `context7`     | `CONTEXT7_API_KEY` | <https://context7.com>                   |
+| `brave-search` | `BRAVE_API_KEY`    | <https://api-dashboard.search.brave.com> |
+| `exa`          | `EXA_API_KEY`      | <https://dashboard.exa.ai>               |
+| `deepwiki`     | (none)             | hosted, no key required                  |
 
 ---
 
 ## Smoke test
 
-Quick sanity-check that the plugin loads and the classifier flow is intact:
+Quick sanity-check that the plugin loads and the classifier flow is intact. Assumes you've already
+installed via Option A or Option C above:
 
 ```bash
 mkdir /tmp/erpaval-smoke && cd /tmp/erpaval-smoke
@@ -448,7 +521,7 @@ Pass criteria: `SessionStart` hook is silent on a cold repo (correct), `CL-SCOPE
 
 ## Repo structure
 
-```
+```text
 .claude-plugin/plugin.json            plugin manifest
 .mcp.json                             MCP servers (context7, deepwiki, brave-search, exa)
 hooks/
@@ -483,7 +556,7 @@ skills/
   working-backwards/                  5-stage WB / PR-FAQ / 5CQ
   customer-research/                  hypothesis + null + MECE + findings
   meta-prompt-optimizer/              prompt audit + rewrite
-  product-design-shared/              canonical methodology refs (DD, JTBD, WB, Pyramid, research-design)
+  product-design-shared/              canonical framework refs (DD, JTBD, WB, Pyramid, research-design)
   agent-ux-patterns/                  A2H, Levels of Autonomy, inbox, progressive trust
 agents/
   researcher.md                       Research-phase agent (with provider availability + fallback table)

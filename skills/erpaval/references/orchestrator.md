@@ -55,6 +55,10 @@ Before advancing, always `TaskList` and verify every task in the current phase i
 
 ### Explore / Research (Gate 0)
 
+**Always launch Explore and Research in parallel from a single message.** They have no data dependency on each other — Explore reads the codebase, Research reads the world. Sequencing them doubles wall-clock for zero correctness benefit. The single-message rule is enforced by the Claude Code Agent tool's "tool calls in one message run concurrently" semantics; two separate messages run sequentially.
+
+For non-trivial work, decompose further: 2-3 Explore subagents split by module, 2-4 researcher subagents split by domain. The rip-and-replace section below confirms the pattern; the standard flow follows it too.
+
 ```text
 TaskCreate(subject="Explore codebase",   description="...")  # → id "1"
 TaskCreate(subject="Research dependencies", description="...")  # → id "2"
@@ -97,6 +101,10 @@ TaskUpdate(taskId="3", status="completed")
 Present the plan to the user. Expect 2-4 revision rounds (cycle C1) — Gate 1 is the design-review checkpoint, not a rubber stamp.
 
 ### Act
+
+**Within a wave, every parallel-safe task must launch in a single message.** A wave is *defined* as "tasks with no inter-wave dependency", so the only correct way to dispatch them is concurrent `Agent` calls in one message with `run_in_background=true`. Two messages = two waves = wall-clock drag. The dependency graph is what gates work, not the message boundary.
+
+On a 26-task session this single discipline drops total wall-clock by ~40%. If you find yourself launching one Agent and waiting before launching the next, stop — you've collapsed the wave back into a sequence. Re-read the wave's `[P]` AC flags and the dependency graph, then re-launch in a single message.
 
 Wave 1 (scaffold) is better done by the orchestrator directly: project structure, `pyproject.toml`, `mise.toml`, directory creation. Fast, benefits from interactive `uv sync` verification, every subsequent agent depends on the file structure it creates.
 
@@ -203,15 +211,15 @@ See `validation-playbook.md` for layer-by-layer prompts and severity rubrics.
 
 ## Agent tool — parameter mapping
 
-| Parameter           | Usage                                                                                       |
-| ------------------- | ------------------------------------------------------------------------------------------- |
-| `description`       | 3-5 word label ("Implement user service")                                                   |
-| `prompt`            | The per-task prompt template above; packet path + write_protocol + success criteria         |
-| `subagent_type`     | `"Explore"` for E, `"researcher"` for R, `"general-purpose"` (default) for Act              |
-| `model`             | `"sonnet"` for clear specs, `"opus"` for complex logic, `"haiku"` for boilerplate           |
-| `run_in_background` | `true` for parallel tasks within a phase; `false` when results are needed before proceeding |
-| `isolation`         | `"worktree"` when AC is marked `[P]` or files overlap; omit otherwise                       |
-| `name`              | `"T-AC-X-Y"` — enables `SendMessage` continuation for C2 in-task fixes                      |
+| Parameter           | Usage                                                                                                   |
+| ------------------- | ------------------------------------------------------------------------------------------------------- |
+| `description`       | 3-5 word label ("Implement user service")                                                               |
+| `prompt`            | The per-task prompt template above; packet path + write_protocol + success criteria                     |
+| `subagent_type`     | `"Explore"` for E, `"researcher"` for R, `"general-purpose"` (default) for Act                          |
+| `model`             | `"sonnet"` for clear specs, `"opus"` for complex logic, `"haiku"` for boilerplate                       |
+| `run_in_background` | **Always `true` when launching ≥2 sibling tasks in one message.** `false` only for solo blocking calls. |
+| `isolation`         | `"worktree"` when AC is marked `[P]` or files overlap; omit otherwise                                   |
+| `name`              | `"T-AC-X-Y"` — enables `SendMessage` continuation for C2 in-task fixes                                  |
 
 Subagents cannot spawn sub-subagents. If a task needs nested delegation, break it into separate tasks.
 

@@ -15,11 +15,11 @@ run = "dprint check"
 
 [tasks."lint:md"]
 description = "Lint markdown files"
-run = "markdownlint-cli2 'skills/**/*.md' 'agents/*.md'"
+run = "markdownlint-cli2 'skills/**/*.md' 'agents/*.md' 'README.md'"
 
 [tasks."lint:md:fix"]
 description = "Lint markdown with auto-fix"
-run = "markdownlint-cli2 --fix 'skills/**/*.md' 'agents/*.md'"
+run = "markdownlint-cli2 --fix 'skills/**/*.md' 'agents/*.md' 'README.md'"
 
 [tasks.lint]
 description = "Run all linters"

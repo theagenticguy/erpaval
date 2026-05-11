@@ -45,11 +45,11 @@ The outcome that would disprove the hypothesis. **Pre-commit before gathering.**
 
 Pick by question type, not by personal preference. See `${CLAUDE_PLUGIN_ROOT}/skills/customer-research/references/research-methods.md` for the taxonomy.
 
-| # | Sub-question | Type                                                                    | Method                   | Source / tool                         |
-| - | ------------ | ----------------------------------------------------------------------- | ------------------------ | ------------------------------------- |
+| # | Sub-question | Type                                                                    | Method                   | Source / tool                                    |
+| - | ------------ | ----------------------------------------------------------------------- | ------------------------ | ------------------------------------------------ |
 | 1 | [from above] | [Behavioral / Attitudinal / Pain-point / Segmentation / Scale / Causal] | [e.g., funnel analytics] | [e.g., feedback aggregation, internal dashboard] |
-| 2 | ...          | ...                                                                     | ...                      | ...                                   |
-| 3 | ...          | ...                                                                     | ...                      | ...                                   |
+| 2 | ...          | ...                                                                     | ...                      | ...                                              |
+| 3 | ...          | ...                                                                     | ...                      | ...                                              |
 
 **Methods mix check**: do you have at least two different methods across the plan? (Single-method plans are brittle.)
 

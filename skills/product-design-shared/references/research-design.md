@@ -78,14 +78,14 @@ These four are MECE: you can answer (1) without answering (2); (3) tests the cau
 
 Different question types want different methods. Pick by question type, not by personal preference.
 
-| Question type          | What it asks                                               | Best methods                                                                      |
-| ---------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| **Behavioral**         | What are people doing?                                     | Funnel analytics, session replay, A/B test, event logs                            |
-| **Attitudinal**        | Why are they doing it? What do they feel?                  | Interviews, open-ended surveys, support ticket review                             |
-| **Pain-point texture** | What is the emotional weight? What does "fixed" feel like? | Ethnography, diary studies, Gemba walks, empathy maps                             |
-| **Segmentation**       | Who is affected? How does behavior differ across groups?   | Cohort analysis, persona-based research                                           |
-| **Scale**              | How common is this?                                        | Quantitative survey, site-wide analytics, industry benchmarks                     |
-| **Causal**             | Does changing X move Y?                                    | Controlled experiment (A/B), quasi-experiment, before/after with controls         |
+| Question type          | What it asks                                               | Best methods                                                              |
+| ---------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Behavioral**         | What are people doing?                                     | Funnel analytics, session replay, A/B test, event logs                    |
+| **Attitudinal**        | Why are they doing it? What do they feel?                  | Interviews, open-ended surveys, support ticket review                     |
+| **Pain-point texture** | What is the emotional weight? What does "fixed" feel like? | Ethnography, diary studies, Gemba walks, empathy maps                     |
+| **Segmentation**       | Who is affected? How does behavior differ across groups?   | Cohort analysis, persona-based research                                   |
+| **Scale**              | How common is this?                                        | Quantitative survey, site-wide analytics, industry benchmarks             |
+| **Causal**             | Does changing X move Y?                                    | Controlled experiment (A/B), quasi-experiment, before/after with controls |
 
 Mix at least two methods across the plan. A plan that relies only on interviews can produce beautiful stories that do not scale; a plan that relies only on analytics can miss the human texture that explains the numbers.
 
