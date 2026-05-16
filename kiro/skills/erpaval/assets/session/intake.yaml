@@ -1,0 +1,21 @@
+session_id: session-<hex>
+working_dir: /absolute/path/to/project
+raw_request: |
+  <user's raw request, verbatim>
+inferred:
+  scope: coding            # or non-coding
+  complexity: multi-module # 1-file-fix | multi-module | rebuild
+  dir_state: existing      # empty | existing | rebuild-in-place
+  variant: brownfield      # greenfield | brownfield | rip-and-replace
+  rigor_needed: []         # subset of [hmw, ears]
+git:
+  is_repo: true
+  branch: main
+  dirty: false
+upstream_artifacts:
+  prd: null                # path if /draft-prd was run
+  stack_decisions: null    # path if /build-stack was run
+env_snapshot:
+  has_mise: true
+  python: "3.12"
+  node: "22"

@@ -1,0 +1,30 @@
+session_id: session-<hex>
+status: active                 # active | completed | abandoned
+variant: brownfield
+classifier_trace:
+  - CL-SCOPE: coding
+  - CL-COMPLEXITY: multi-module
+  - CL-DIR: existing
+  - CL-RIGOR: []
+  - CL-SPEC: ready
+cycles_executed:
+  C1: 0
+  C2: 0
+  C3: 0
+  C4: 0
+  C5: 0
+  C6: 0
+packets:
+  intake: .erpaval/sessions/<id>/intake.yaml
+  recall: .erpaval/sessions/<id>/recall.yaml
+  hmw: null
+  ears: null
+  explore: []
+  research: []
+  plan_revisions: []
+  tasks: []
+  validation: null
+  lessons: null
+merge:
+  auto: null
+  disposition: null

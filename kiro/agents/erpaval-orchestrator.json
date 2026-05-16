@@ -1,0 +1,68 @@
+{
+  "name": "erpaval-orchestrator",
+  "description": "Adaptive autonomous software development workflow. Runs Explore/Research/Plan/Act/Validate/Compound phases via subagents, persists lessons to .erpaval/solutions/.",
+  "prompt": "file://./prompts/erpaval-orchestrator.md",
+  "model": "claude-sonnet-4",
+  "tools": [
+    "read",
+    "write",
+    "glob",
+    "grep",
+    "execute_bash",
+    "subagent",
+    "web_fetch",
+    "tool_search",
+    "todo",
+    "@context7",
+    "@deepwiki",
+    "@brave-search",
+    "@exa"
+  ],
+  "allowedTools": [
+    "read",
+    "glob",
+    "grep",
+    "@context7",
+    "@deepwiki"
+  ],
+  "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "erpaval-researcher",
+        "erpaval-explorer",
+        "erpaval-act-*"
+      ],
+      "trustedAgents": [
+        "erpaval-researcher",
+        "erpaval-explorer"
+      ]
+    }
+  },
+  "resources": [
+    "file://${ERPAVAL_HOME}/skills/erpaval/SKILL.md",
+    "file://${ERPAVAL_HOME}/skills/erpaval/references/**/*.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "${ERPAVAL_HOME}/hooks/kiro_session_start_bootstrap.py",
+        "timeout_ms": 10000
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "${ERPAVAL_HOME}/hooks/kiro_validate_packet.py",
+        "timeout_ms": 10000
+      }
+    ],
+    "stop": [
+      {
+        "command": "${ERPAVAL_HOME}/hooks/kiro_compound_nudge.py",
+        "timeout_ms": 10000
+      }
+    ]
+  },
+  "includeMcpJson": true,
+  "welcomeMessage": "ERPAVal orchestrator ready. Run `/erpaval` with your request."
+}

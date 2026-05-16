@@ -1,0 +1,37 @@
+{
+  "name": "erpaval-explorer",
+  "description": "Read-only codebase explorer. Build mental models, find files, trace symbols, summarize architecture. Cannot modify files.",
+  "prompt": "file://./prompts/erpaval-explorer.md",
+  "model": "claude-sonnet-4",
+  "tools": [
+    "read",
+    "grep",
+    "glob",
+    "execute_bash"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "allowedCommands": [
+        "wc *",
+        "find *",
+        "ls *",
+        "git log *",
+        "git blame *",
+        "tree *"
+      ],
+      "deniedCommands": [
+        "rm *",
+        "mv *",
+        "cp *",
+        "git push *",
+        "git commit *"
+      ]
+    }
+  },
+  "includeMcpJson": false
+}

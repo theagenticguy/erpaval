@@ -1,0 +1,24 @@
+validation_id: val-<n>
+layers:
+  l1_static:
+    status: pass              # pass | fail | findings
+    checks:
+      - cmd: "uvx ruff check ."
+        exit: 0
+      - cmd: "uv run pyright"
+        exit: 0
+      - cmd: "uv run pytest"
+        exit: 0
+  l2_quality:
+    status: pass
+    agent: opus
+    findings: []
+  l3_security:
+    status: pass
+    tools:
+      - cmd: "semgrep --config p/owasp-top-ten"
+        findings: []
+      - agent: opus-security
+        findings: []
+auto_merge_eligible: true
+disposition: null             # pending_human | accepted | accepted_with_followup
