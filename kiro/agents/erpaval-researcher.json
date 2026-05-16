@@ -2,38 +2,29 @@
   "name": "erpaval-researcher",
   "description": "General-purpose research agent that scales depth and breadth to match any research task. Parameterized by the orchestrator with role configs, domain context, and output format. Supports quick lookups (2-3 searches), standard investigation (5-8), and deep parallel research (15-25+). Used by the ERPAVal orchestrator's Research phase and proactively for pre-coding dependency research, library documentation lookups, and agentic AI framework investigation.",
   "prompt": "file://./prompts/erpaval-researcher.md",
-  "model": "claude-sonnet-4",
+  "model": "claude-opus-4-7",
   "tools": [
-    "read",
+    "fs_read",
+    "fs_write",
     "grep",
     "glob",
     "execute_bash",
+    "use_aws",
+    "code",
+    "introspect",
+    "tool_search",
+    "delegate",
+    "knowledge",
+    "thinking",
+    "todo",
+    "session",
     "web_fetch",
     "web_search",
-    "tool_search",
     "@context7",
     "@deepwiki",
     "@brave-search",
     "@exa"
   ],
-  "allowedTools": [
-    "read",
-    "grep",
-    "glob",
-    "@context7/resolve-library-id",
-    "@context7/query-docs",
-    "@deepwiki/read_wiki_structure",
-    "@deepwiki/read_wiki_contents",
-    "@deepwiki/ask_question"
-  ],
-  "toolsSettings": {
-    "shell": {
-      "allowedCommands": [
-        "date *",
-        "git status *",
-        "git log *"
-      ]
-    }
-  },
+  "allowedTools": ["*"],
   "includeMcpJson": true
 }
