@@ -26,6 +26,11 @@ tools:
   - mcp__plugin_erpaval_exa__get_code_context_exa
   - mcp__plugin_erpaval_exa__company_research_exa
   - mcp__plugin_erpaval_brave-search__brave_web_search
+  - mcp__plugin_erpaval_awsknowledge__aws___search_documentation
+  - mcp__plugin_erpaval_awsknowledge__aws___read_documentation
+  - mcp__plugin_erpaval_awsknowledge__aws___recommend
+  - mcp__plugin_erpaval_awsknowledge__aws___list_regions
+  - mcp__plugin_erpaval_awsknowledge__aws___get_regional_availability
 whenToUse: |
   Examples:
 
@@ -94,19 +99,22 @@ When launched by a skill orchestrator (`/deep-research`, `/build-stack`, `/draft
 
 ## Tool Priority by Research Type
 
-| Research Type    | Priority Order                    |
-| ---------------- | --------------------------------- |
-| General topic    | exa → brave → WebFetch            |
-| Code / library   | context7 → deepwiki → exa → brave |
-| Market / product | brave → exa → WebFetch            |
+| Research Type      | Priority Order                                  |
+| ------------------ | ----------------------------------------------- |
+| General topic      | exa → brave → WebFetch                          |
+| Code / library     | context7 → deepwiki → exa → brave               |
+| AWS service or SDK | awsknowledge → context7 → deepwiki → WebFetch   |
+| Market / product   | brave → exa → WebFetch                          |
 
 **For library, API, or SDK lookups: always start with `context7`.** Resolve the library ID first (`mcp__plugin_erpaval_context7__resolve-library-id`), then fetch docs (`mcp__plugin_erpaval_context7__query-docs`). Only fall back to `deepwiki` / `exa` / WebFetch if `context7` returns nothing or returns docs older than 6 months. Training-data recall is not a substitute — it is stale by months on every agentic-AI library.
 
-The plugin ships four MCP research servers (context7, deepwiki, brave-search, exa). Use `ToolSearch` to load any MCP tool before first use. If your environment has additional MCP research servers configured outside this plugin, they remain available too — but assume only the four bundled servers are present unless you verify otherwise.
+**For AWS-specific lookups (Bedrock, CDK, Aurora, Strands, Q Developer, IAM, any `aws-*` SDK or service): always start with `awsknowledge`.** It's the AWS-managed knowledge MCP at `https://knowledge-mcp.global.api.aws` and serves the latest official AWS docs, API references, What's New posts, and Getting Started content. Use `aws___search_documentation` for keyword search, `aws___read_documentation` for a known URL, and `aws___recommend` for related-topic discovery. Fall back to `context7` only if the AWS topic isn't covered (rare for first-party services).
+
+The plugin ships five MCP research servers (context7, deepwiki, brave-search, exa, awsknowledge). Use `ToolSearch` to load any MCP tool before first use. If your environment has additional MCP research servers configured outside this plugin, they remain available too — but assume only the five bundled servers are present unless you verify otherwise.
 
 ## Provider availability and fallbacks
 
-The plugin ships an `.mcp.json` declaring four research servers. Some require API keys (set via env vars). When a primary tool is unavailable, fall back to the next column without surfacing the failure to the user — degrade gracefully.
+The plugin ships an `.mcp.json` declaring five research servers. Some require API keys (set via env vars). When a primary tool is unavailable, fall back to the next column without surfacing the failure to the user — degrade gracefully.
 
 | Primary tool                               | Requires env var   | Fallback                                                        |
 | ------------------------------------------ | ------------------ | --------------------------------------------------------------- |
@@ -114,6 +122,7 @@ The plugin ships an `.mcp.json` declaring four research servers. Some require AP
 | `mcp__plugin_erpaval_deepwiki__*`          | none               | `WebFetch` against `raw.githubusercontent.com/<org>/<repo>/...` |
 | `mcp__plugin_erpaval_brave-search__*`      | `BRAVE_API_KEY`    | `WebSearch` (built-in)                                          |
 | `mcp__plugin_erpaval_exa__*`               | `EXA_API_KEY`      | `WebSearch` + multiple targeted `WebFetch` calls                |
+| `mcp__plugin_erpaval_awsknowledge__*`      | none               | `WebFetch` against `docs.aws.amazon.com/<service>/...`          |
 
 **Two-error rule.** If two consecutive calls to a single MCP provider error out (key missing, rate limit, transport failure), treat that provider as unavailable for the rest of the session. Switch to the fallback column and do not retry. Note the unavailability inline in your output so the orchestrator knows which sources backed the findings.
 

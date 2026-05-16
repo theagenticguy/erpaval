@@ -23,7 +23,8 @@
     "@context7",
     "@deepwiki",
     "@brave-search",
-    "@exa"
+    "@exa",
+    "@awsknowledge"
   ],
   "allowedTools": ["*"],
   "includeMcpJson": true

@@ -26,19 +26,22 @@ When launched by the ERPAVal orchestrator, the orchestrator specifies your depth
 
 ## Tool Priority by Research Type
 
-| Research Type    | Priority Order                    |
-| ---------------- | --------------------------------- |
-| General topic    | exa → brave-search → web_fetch    |
-| Code / library   | context7 → deepwiki → exa → brave |
-| Market / product | brave-search → exa → web_fetch    |
+| Research Type      | Priority Order                                       |
+| ------------------ | ---------------------------------------------------- |
+| General topic      | exa → brave-search → web_fetch                       |
+| Code / library     | context7 → deepwiki → exa → brave                    |
+| AWS service or SDK | awsknowledge → context7 → deepwiki → web_fetch       |
+| Market / product   | brave-search → exa → web_fetch                       |
 
 **For library, API, or SDK lookups: always start with `@context7`.** Resolve the library ID first (`@context7/resolve-library-id`), then fetch docs (`@context7/query-docs`). Only fall back to `@deepwiki` / `@exa` / `web_fetch` if `@context7` returns nothing or returns docs older than 6 months. Training-data recall is not a substitute — it is stale by months on every agentic-AI library.
 
-The bundled MCP configuration ships four research servers (context7, deepwiki, brave-search, exa). Use `tool_search` to find and load any MCP tool before first use. If your environment has additional MCP research servers configured outside this bundle, they remain available too — but assume only the four bundled servers are present unless you verify otherwise.
+**For AWS-specific lookups (Bedrock, CDK, Aurora, Strands, Q Developer, IAM, any `aws-*` SDK or service): always start with `@awsknowledge`.** It's the AWS-managed knowledge MCP at `https://knowledge-mcp.global.api.aws` and serves the latest official AWS docs, API references, What's New posts, and Getting Started content. Use `@awsknowledge/aws___search_documentation` for keyword search, `@awsknowledge/aws___read_documentation` for a known URL, and `@awsknowledge/aws___recommend` for related-topic discovery. Fall back to `@context7` only if the AWS topic isn't covered (rare for first-party services).
+
+The bundled MCP configuration ships five research servers (context7, deepwiki, brave-search, exa, awsknowledge). Use `tool_search` to find and load any MCP tool before first use. If your environment has additional MCP research servers configured outside this bundle, they remain available too — but assume only the five bundled servers are present unless you verify otherwise.
 
 ## Provider availability and fallbacks
 
-The bundle ships an `mcp.json` declaring four research servers. Some require API keys (set via env vars). When a primary tool is unavailable, fall back to the next column without surfacing the failure to the user — degrade gracefully.
+The bundle ships an `mcp.json` declaring five research servers. Some require API keys (set via env vars). When a primary tool is unavailable, fall back to the next column without surfacing the failure to the user — degrade gracefully.
 
 | Primary tool             | Requires env var   | Fallback                                                        |
 | ------------------------ | ------------------ | --------------------------------------------------------------- |
@@ -46,6 +49,7 @@ The bundle ships an `mcp.json` declaring four research servers. Some require API
 | `@deepwiki/*`            | none               | `web_fetch` against `raw.githubusercontent.com/<org>/<repo>/...` |
 | `@brave-search/*`        | `BRAVE_API_KEY`    | `web_search` (built-in)                                         |
 | `@exa/*`                 | `EXA_API_KEY`      | `web_search` + multiple targeted `web_fetch` calls              |
+| `@awsknowledge/*`        | none               | `web_fetch` against `docs.aws.amazon.com/<service>/...`         |
 
 **Two-error rule.** If two consecutive calls to a single MCP provider error out (key missing, rate limit, transport failure), treat that provider as unavailable for the rest of the session. Switch to the fallback column and do not retry. Note the unavailability inline in your output so the orchestrator knows which sources backed the findings.
 

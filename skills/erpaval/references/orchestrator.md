@@ -100,6 +100,16 @@ TaskUpdate(taskId="3", status="completed")
 
 Present the plan to the user. Expect 2-4 revision rounds (cycle C1) — Gate 1 is the design-review checkpoint, not a rubber stamp.
 
+#### Library binding — every dependency cites Research
+
+Every plan task that touches a third-party library, SDK, API, or AWS service must cite a `CP-RESEARCH` entry by file:line in its `Dependencies` packet section. The cited entry must include a pinned version, an authoritative source URL, and an `as_of:` date within the last 6 months. Three concrete rules:
+
+- **Code / library tasks** — cite a `context7` lookup (`mcp__plugin_erpaval_context7__query-docs`) for the library's current API. If `context7` returns nothing, deepwiki / exa / WebFetch are acceptable, but the packet must say so.
+- **AWS-specific tasks** — cite an `awsknowledge` lookup (`mcp__plugin_erpaval_awsknowledge__aws___search_documentation` or `aws___read_documentation`) for first-party AWS services (Bedrock, CDK, Aurora, Strands, Q Developer, IAM, any `aws-*` SDK). Training-data recall on AWS APIs is the #1 cause of plausibly-wrong CDK constructs and Bedrock invocation shapes.
+- **Missing citation = blocker** — if a planned task touches a library and Research has no covering entry, do NOT emit the task. Route back to Research via cycle C1b with a scoped `Agent` call naming the missing library/service. Plan re-runs after Research returns.
+
+This makes "the dep was upgraded last month and broke" detectable at Gate 1 instead of Wave 3.
+
 ### Act
 
 **Within a wave, every parallel-safe task must launch in a single message.** A wave is *defined* as "tasks with no inter-wave dependency", so the only correct way to dispatch them is concurrent `Agent` calls in one message with `run_in_background=true`. Two messages = two waves = wall-clock drag. The dependency graph is what gates work, not the message boundary.
