@@ -178,9 +178,10 @@ return and the packet's Work log. Seed a new prereq packet
 `tasks/T-AC-prereq-X.md` with `status: IN_PROGRESS` and `blocked_by: []`.
 Edit the original task's packet frontmatter to add `blocked_by:
 [T-AC-prereq-X]` and flip its status back to `BLOCKED`. Mirror with `/todo
-add` for visibility. Then `/spawn` the prereq subagent. When the prereq
-packet flips to `status: COMPLETE`, flip the original task back to
-`IN_PROGRESS` and `/spawn` it with updated context.
+add` for visibility. Then dispatch the prereq subagent via NL (`> Use a
+general-purpose agent to act as the T-AC-prereq-X subagent ...`). When
+the prereq packet flips to `status: COMPLETE`, flip the original task
+back to `IN_PROGRESS` and re-dispatch it via NL with updated context.
 
 Missing prereqs often indicate the EARS spec was incomplete. Consider
 revising `spec.md` so future sessions do not repeat the gap.

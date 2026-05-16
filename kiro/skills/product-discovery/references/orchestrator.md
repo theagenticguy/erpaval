@@ -96,7 +96,7 @@ Keep framing.md under ~80 lines. You are a seed, not the full round.
 <quality_bar>
 - Problem section cites 3+ sources from the user's material.
 - Routing call is explicit with one-sentence rationale.
-- Flip Status: IN PROGRESS → COMPLETE when done.
+- Flip Status: IN PROGRESS → COMPLETE when done. Final step: call the built-in `summary` tool with a 1-2 paragraph result; return nothing else.
 </quality_bar>
 ```
 
@@ -106,7 +106,7 @@ Run foreground. Proceed to Phase 2 when the agent flips framing.md to COMPLETE.
 
 ## Phase 2 — Parallel execution
 
-Fan-out depends on the route. In every case, launch parallel `/spawn` calls in a **single turn** — one `/spawn` per role. All `/spawn` calls run in the background; Kiro caps active subagents at 4. The orchestrator agent's JSON sets `model` per agent (typically `claude-opus-4-7`); per-invocation model selection is not supported.
+Fan-out depends on the route. In every case, launch parallel NL subagent dispatches (`> Use a general-purpose agent to ...`) in a **single turn** — one dispatch per role. All NL dispatches run in the background; Kiro caps active subagents at 4. The orchestrator agent's JSON sets `model` per agent (typically `claude-opus-4-7`); per-invocation model selection is not supported.
 
 Seed each subagent's output file from the matching template before launching — no subagent faces a blank file. Each subagent also gets a work log seeded from `assets/worklog-skeleton.md` with role filled in.
 
@@ -166,7 +166,7 @@ Launch whatever framing.md flagged in one turn. Write role prompts from the corr
 
 ### HMW-only route — one agent
 
-Spawn `hmw-framer` as a single `/spawn` call (foreground, single subagent):
+Dispatch `hmw-framer` via NL: `> Use a general-purpose agent to act as the hmw-framer role`. Single subagent (foreground, single subagent):
 
 ```text
 You are the HMW framer. Read the user's brief and produce 3-5 outcome-level "How might we" questions that pass NN/g validation.
@@ -188,12 +188,12 @@ ${ERPAVAL_HOME}/skills/product-discovery/references/frameworks/how-might-we.md
 {{ paste write-protocol verbatim }}
 </write_protocol>
 
-Follow the 4-step process in the role reference. Flip Status: IN PROGRESS → COMPLETE when every HMW passes NN/g validation.
+Follow the 4-step process in the role reference. Flip Status: IN PROGRESS → COMPLETE when every HMW passes NN/g validation. Final step: call the built-in `summary` tool with a 1-2 paragraph result; return nothing else.
 ```
 
 ### EARS-only route — one agent
 
-Spawn `ears-specifier` as a single `/spawn` call:
+Dispatch `ears-specifier` via NL: `> Use a general-purpose agent to act as the ears-specifier role`. Single subagent:
 
 ```text
 You are the EARS specifier. Read the user's feature brief and write dependency-aware acceptance criteria in the five EARS templates.
@@ -216,12 +216,12 @@ ${ERPAVAL_HOME}/skills/product-discovery/references/frameworks/ears.md
 {{ paste write-protocol verbatim }}
 </write_protocol>
 
-Follow the process in the role reference. Every AC uses one of the five templates literally. Every AC has [P] or Dependencies:. Flip Status: IN PROGRESS → COMPLETE when done.
+Follow the process in the role reference. Every AC uses one of the five templates literally. Every AC has [P] or Dependencies:. Flip Status: IN PROGRESS → COMPLETE when done. Final step: call the built-in `summary` tool with a 1-2 paragraph result; return nothing else.
 ```
 
 ### JTBD-only route — one agent
 
-Spawn `jtbd-interviewer` as a single `/spawn` call:
+Dispatch `jtbd-interviewer` via NL: `> Use a general-purpose agent to act as the jtbd-interviewer role`. Single subagent:
 
 ```text
 You are the JTBD interviewer. Read the PM-provided source material (interview notes, tickets, quotes) and produce Klement-style job stories.
@@ -243,7 +243,7 @@ ${ERPAVAL_HOME}/skills/product-discovery/references/frameworks/jtbd-job-stories.
 {{ paste write-protocol verbatim }}
 </write_protocol>
 
-Every job story cites at least one source. No persona-simulator entries. Flip Status: IN PROGRESS → COMPLETE when done.
+Every job story cites at least one source. No persona-simulator entries. Flip Status: IN PROGRESS → COMPLETE when done. Final step: call the built-in `summary` tool with a 1-2 paragraph result; return nothing else.
 ```
 
 ### Monitor (all routes with parallel agents)
@@ -267,7 +267,7 @@ Phase 2 check-in #2:
 
 ### Stuck detection
 
-A work log with unchanged line count across two consecutive check-ins is stuck. `/spawn` a fresh subagent with the existing file state and a "skip completed sections" prompt so the new subagent doesn't re-do work. Never wait for a stuck subagent to self-correct. (Kiro has no `kill --background` primitive — let the original drain.)
+A work log with unchanged line count across two consecutive check-ins is stuck. Re-dispatch via NL with the existing file state and a "skip completed sections" prompt so the new subagent doesn't re-do work. Never wait for a stuck subagent to self-correct. (Kiro has no `kill --background` primitive — let the original drain.)
 
 ---
 
@@ -277,7 +277,7 @@ One foreground agent composes the final artifact.
 
 ### PRD route — `prd-synthesizer`
 
-Spawn `prd-synthesizer` as a single `/spawn` call:
+Dispatch `prd-synthesizer` via NL: `> Use a general-purpose agent to act as the prd-synthesizer role`. Single subagent:
 
 ```text
 You are the PRD synthesizer. Read the three parallel work logs and compose the final PRD.
@@ -305,7 +305,7 @@ ${ERPAVAL_HOME}/skills/product-discovery/references/quality/prd.md
 {{ paste write-protocol verbatim }}
 </write_protocol>
 
-Follow the 7-step process in the role reference. Resolve contradictions per the priority order. Build Sections 14 and 15. Run the cross-section consistency pass. Flip Status: IN PROGRESS → COMPLETE when the quality bar passes.
+Follow the 7-step process in the role reference. Resolve contradictions per the priority order. Build Sections 14 and 15. Run the cross-section consistency pass. Flip Status: IN PROGRESS → COMPLETE when the quality bar passes. Final step: call the built-in `summary` tool with a 1-2 paragraph result; return nothing else.
 ```
 
 ### Discovery-round route — `discovery-lead` (return)
@@ -320,7 +320,7 @@ The single-agent output is the final artifact. Skip Phase 3; go straight to Phas
 
 ## Phase 3.5 — Critic review
 
-Spawn `discovery-critic` as a single `/spawn` call:
+Dispatch `discovery-critic` via NL: `> Use a general-purpose agent to act as the discovery-critic role`. Single subagent:
 
 ```text
 You are the discovery critic. Read the synthesized artifact and write a rubric-graded review.
@@ -339,7 +339,7 @@ Your output: product-discovery/{{ slug }}/review-critic.md
 {{ paste write-protocol verbatim }}
 </write_protocol>
 
-Score the rubric per dimension (Problem grounding, Coherence, Specificity, Scope integrity, Evidence hygiene, Structural compliance). Set overall score. Prioritize findings (critical / warning / suggestion). Flip Status: IN PROGRESS → COMPLETE when all dimensions are scored.
+Score the rubric per dimension (Problem grounding, Coherence, Specificity, Scope integrity, Evidence hygiene, Structural compliance). Set overall score. Prioritize findings (critical / warning / suggestion). Flip Status: IN PROGRESS → COMPLETE when all dimensions are scored. Final step: call the built-in `summary` tool with a 1-2 paragraph result; return nothing else.
 ```
 
 When the critic flips COMPLETE, read the review inline and present to the user:

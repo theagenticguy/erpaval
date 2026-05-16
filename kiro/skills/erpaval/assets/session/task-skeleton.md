@@ -26,6 +26,8 @@ If a check fails (lint, type, test, semgrep): write the failure here, then fix, 
 **Cite every code change with file:line.** "Added `verify_pkce` at `src/auth/oauth_service.py:142-168`" beats "Added the PKCE helper."
 
 When every section has real content and every success criterion is checked off, change `status: IN_PROGRESS` in the frontmatter to `status: COMPLETE`.
+
+**Final return — non-negotiable.** Your last act before finishing must be a call to the built-in `summary` tool with a 1-2 paragraph result (what changed, where, key file:line citations). The packet on disk is the artifact; the `summary` call is the *return path* to the orchestrator. If you finish without calling `summary`, the orchestrator receives "No result" and the dispatch reads as failed even when the work is correct on disk. Return nothing else after the `summary` call.
 </write_protocol>
 
 ## 1. Objective
