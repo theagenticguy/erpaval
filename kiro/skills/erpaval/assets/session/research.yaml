@@ -1,0 +1,11 @@
+agent_id: research-<domain>
+domain: <e.g., OAuth + PKCE libraries>
+libraries:
+  - name: <package name>
+    version_pin: "^<major>.<minor>"
+    docs_source: context7    # context7 | deepwiki | web
+    api_surface:
+      - <namespaced API path>
+    breaking_changes: <summary of relevant changes>
+    security_notes:
+      - <note>

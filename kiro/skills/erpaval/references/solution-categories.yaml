@@ -1,0 +1,23 @@
+# Canonical list of `.erpaval/solutions/<category>/` folders.
+# Single source of truth — `erpaval-new.py` reads this to scaffold directories,
+# other references link here instead of enumerating.
+#
+# Each entry: folder name + track (bug | knowledge) + one-line description.
+
+bug:
+  - name: build-errors
+    description: Compile/package/install failures and their fixes.
+  - name: test-failures
+    description: Flaky, environment-specific, or fixture-related test failures.
+  - name: deploy-errors
+    description: Deployment, migration, and release-pipeline failures.
+
+knowledge:
+  - name: architecture-patterns
+    description: Non-obvious architectural decisions and their rationale.
+  - name: best-practices
+    description: Project-specific idioms that newcomers wouldn't infer.
+  - name: conventions
+    description: Naming, layout, and style conventions the codebase follows.
+  - name: api-patterns
+    description: Library or API usage patterns worth reusing across tasks.

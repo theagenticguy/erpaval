@@ -1,0 +1,13 @@
+agent_id: explore-<n>
+scope: <path glob or description of areas explored>
+findings:
+  architecture: <one-sentence summary>
+  patterns:
+    error_handling: <pattern>
+    dependency_injection: <pattern or none>
+    test_style: <framework + style>
+  touch_points:
+    - <file path>
+    - <file path>
+  test_infra: <layout description>
+  toolchain: <mise / pyproject / package.json summary>
