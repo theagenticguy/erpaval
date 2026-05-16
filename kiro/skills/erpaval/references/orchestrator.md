@@ -109,6 +109,19 @@ EOF
 /todo add "T-AC-1-2: <subject>"
 /todo add "T-AC-1-3: <subject>"  # blocked_by: [T-AC-1-1, T-AC-1-2]
 /todo add "T-AC-2-1: <subject>"
+```
+
+#### Library binding — every dependency cites Research
+
+Every plan task that touches a third-party library, SDK, API, or AWS service must cite a `CP-RESEARCH` entry by file:line in its `Dependencies` packet section. The cited entry must include a pinned version, an authoritative source URL, and an `as_of:` date within the last 6 months. Three concrete rules:
+
+- **Code / library tasks** — cite a `@context7` lookup (`@context7/query-docs`) for the library's current API. If `@context7` returns nothing, `@deepwiki` / `@exa` / `web_fetch` are acceptable, but the packet must say so.
+- **AWS-specific tasks** — cite an `@awsknowledge` lookup (`@awsknowledge/aws___search_documentation` or `aws___read_documentation`) for first-party AWS services (Bedrock, CDK, Aurora, Strands, Q Developer, IAM, any `aws-*` SDK). Training-data recall on AWS APIs is the #1 cause of plausibly-wrong CDK constructs and Bedrock invocation shapes.
+- **Missing citation = blocker** — if a planned task touches a library and Research has no covering entry, do NOT seed the task packet. Route back to Research via cycle C1b with a scoped `/spawn` naming the missing library/service. Plan re-runs after Research returns.
+
+This makes "the dep was upgraded last month and broke" detectable at Gate 1 instead of Wave 3.
+
+```text
 /todo add "Validate all"          # blocked_by: every T-AC-*
 
 # When the plan is approved by the user, flip the plan packet:

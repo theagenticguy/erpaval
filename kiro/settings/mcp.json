@@ -24,6 +24,10 @@
       "env": {
         "EXA_API_KEY": "${EXA_API_KEY}"
       }
+    },
+    "awsknowledge": {
+      "type": "http",
+      "url": "https://knowledge-mcp.global.api.aws"
     }
   }
 }
