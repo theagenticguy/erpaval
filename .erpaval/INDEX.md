@@ -14,7 +14,9 @@ lessons before starting work.
 
 ### knowledge / best-practices
 - [install-mkdir-vs-symlink](solutions/best-practices/install-mkdir-vs-symlink.md) — `mkdir -p` then `ln -sfn` against an empty directory creates the symlink INSIDE the dir, not as a replacement. Two safe install-script patterns documented.
+- [kiro-subagent-vs-spawn-summary-return-path](solutions/best-practices/kiro-subagent-vs-spawn-summary-return-path.md) — Kiro CLI's `subagent` built-in tool (NL-driven) is the orchestrator's delegation primitive; `/spawn` is for users only. Subagents must call the auto-attached `summary` tool as their final act or the parent receives "No result" even when the packet on disk is correct. Includes the canonical permission contract and a "No result" diagnostic checklist.
 
 ## Recent additions
 
 - 2026-05-16 — three lessons from session-554486 (Kiro CLI compatibility port)
+- 2026-05-16 — Kiro subagent dispatch lesson from kiro-test field test

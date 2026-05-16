@@ -62,8 +62,8 @@ One skill, five routes. Takes a problem at any maturity and routes to the
 right framework pipeline. The maturity range goes from a one-sentence idea
 through research notes and fuzzy framing to a clear feature. File-first
 write protocol throughout. Every role is a Markdown prompt copied verbatim
-into a general-purpose Kiro `/spawn` invocation. Zero custom agent files
-needed.
+into a general-purpose Kiro NL subagent dispatch (`> Use a general-purpose
+agent to ...`). Zero custom agent files needed.
 
 ## Pipeline at a glance
 
