@@ -2,29 +2,32 @@
   "name": "erpaval-orchestrator",
   "description": "Adaptive autonomous software development workflow. Runs Explore/Research/Plan/Act/Validate/Compound phases via subagents, persists lessons to .erpaval/solutions/.",
   "prompt": "file://./prompts/erpaval-orchestrator.md",
-  "model": "claude-sonnet-4",
+  "model": "claude-opus-4-7",
   "tools": [
-    "read",
-    "write",
+    "fs_read",
+    "fs_write",
     "glob",
     "grep",
     "execute_bash",
-    "subagent",
-    "web_fetch",
+    "use_aws",
+    "code",
+    "introspect",
     "tool_search",
+    "delegate",
+    "subagent",
+    "summary",
+    "knowledge",
+    "thinking",
     "todo",
+    "session",
+    "web_fetch",
+    "web_search",
     "@context7",
     "@deepwiki",
     "@brave-search",
     "@exa"
   ],
-  "allowedTools": [
-    "read",
-    "glob",
-    "grep",
-    "@context7",
-    "@deepwiki"
-  ],
+  "allowedTools": ["*"],
   "toolsSettings": {
     "subagent": {
       "availableAgents": [
@@ -34,7 +37,8 @@
       ],
       "trustedAgents": [
         "erpaval-researcher",
-        "erpaval-explorer"
+        "erpaval-explorer",
+        "erpaval-act-*"
       ]
     }
   },

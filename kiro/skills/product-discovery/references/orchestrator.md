@@ -106,7 +106,7 @@ Run foreground. Proceed to Phase 2 when the agent flips framing.md to COMPLETE.
 
 ## Phase 2 — Parallel execution
 
-Fan-out depends on the route. In every case, launch parallel `/spawn` calls in a **single turn** — one `/spawn` per role. All `/spawn` calls run in the background; Kiro caps active subagents at 4. The orchestrator agent's JSON sets `model` per agent (typically `claude-opus-4`); per-invocation model selection is not supported.
+Fan-out depends on the route. In every case, launch parallel `/spawn` calls in a **single turn** — one `/spawn` per role. All `/spawn` calls run in the background; Kiro caps active subagents at 4. The orchestrator agent's JSON sets `model` per agent (typically `claude-opus-4-7`); per-invocation model selection is not supported.
 
 Seed each subagent's output file from the matching template before launching — no subagent faces a blank file. Each subagent also gets a work log seeded from `assets/worklog-skeleton.md` with role filled in.
 

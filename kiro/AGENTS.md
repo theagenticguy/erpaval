@@ -41,6 +41,20 @@ kiro/
 ./install.sh --uninstall    # remove installer-created symlinks
 ```
 
+## Run
+
+```bash
+kiro-cli chat --agent erpaval-orchestrator --trust-all-tools
+```
+
+`--trust-all-tools` auto-approves every tool call so subagents can write,
+shell out, and call MCP servers without prompting. For unattended runs add
+`--no-interactive` and set `KIRO_API_KEY`. For least-privilege scoping use
+`--trust-tools=read,grep,glob,write,execute_bash` instead.
+
+All three agents pin `model: claude-opus-4-7`. Override per-invocation with
+`--model <id>` or edit the JSONs.
+
 ## ERPAVAL_HOME
 
 The installer substitutes `${ERPAVAL_HOME}` into the agent JSONs at install
