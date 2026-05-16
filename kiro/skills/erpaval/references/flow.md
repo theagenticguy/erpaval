@@ -1,19 +1,21 @@
 # The adaptive flow
 
-Canonical graph for ERPAVal. Where this file disagrees with the glance-graph in `SKILL.md`, this file wins. Terms like `CP-*`, `CL-*`, Gates 0/1/2, Wave are defined in `glossary.md`.
+Canonical graph for ERPAVal. Where this file disagrees with the
+glance-graph in `SKILL.md`, this file wins. Terms like `CP-*`, `CL-*`,
+Gates 0/1/2, and Wave are defined in `glossary.md`.
 
-Conventions:
+## Conventions
 
-- Solid edges are forward flow; dashed edges are named cycles.
-- Diamond nodes are classifiers or gates.
-- Cylinder nodes are persisted context packets (`CP-*`).
-- Optional steps carry the edge label `fuzzy` or `contract unclear` — Claude runs them only when `CL-RIGOR` returns the matching signal (see `classifiers.md`).
+Solid edges are forward flow. Dashed edges are named cycles. Diamond nodes
+are classifiers or gates. Cylinder nodes are persisted context packets
+(`CP-*`). Optional steps carry the edge label `fuzzy` or `contract
+unclear`. Claude runs them only when `CL-RIGOR` returns the matching
+signal. See `classifiers.md` for the prompt text.
 
----
+## §A — Intake and triage
 
-## §A — Intake & triage
-
-Session start through "ready to build". Every branch either routes to another skill, exits, or hands off to §B.
+Session start through "ready to build". Every branch either routes to
+another skill, exits, or hands off to §B.
 
 ```mermaid
 flowchart LR
@@ -65,7 +67,9 @@ flowchart LR
 
 ## §B — Build loop
 
-Explore through Act, with four cycles: C1 / C1b / C1c (plan, re-explore, reframe), C2 (in-task fix), C3 (missing-prereq replan), C6 (wave progression).
+Explore through Act, with four cycles. C1, C1b, and C1c handle plan,
+re-explore, and reframe. C2 is the in-task fix loop. C3 is the
+missing-prereq replan. C6 is wave progression.
 
 ```mermaid
 flowchart LR
@@ -92,7 +96,7 @@ flowchart LR
   PH_ACT --> CP_TASK[(CP-TASK-N)]
   CP_TASK --> MONITOR[Monitor · wc -l + eager unblock]
   MONITOR --> TASK_RESULT{Task result?}
-  TASK_RESULT -.->|C2 lint/type fail| FIX_SEND[SendMessage]
+  TASK_RESULT -.->|C2 lint or type fail| FIX_SEND[SendMessage]
   FIX_SEND --> MONITOR
   TASK_RESULT -.->|C3 missing prereq| REPLAN[Insert task · replan]
   REPLAN --> PH_PLAN
@@ -101,9 +105,12 @@ flowchart LR
   WAVE_CHECK -->|all done| HANDOFF_C([to §C])
 ```
 
-## §C — Validate · merge · compound
+## §C — Validate, merge, compound
 
-Three validation layers run in sequence. Gate 2 auto-merges if clean; otherwise human dispositions findings. After merge, Compound extracts lessons from the session trace — this is what makes N+1 smarter than N.
+Three validation layers run in sequence. Gate 2 auto-merges if clean.
+Otherwise human dispositions findings. After merge, Compound extracts
+lessons from the session trace. This is what makes session N+1 smarter
+than session N.
 
 ```mermaid
 flowchart LR
@@ -134,51 +141,59 @@ flowchart LR
   CP_SESSION --> DONE([Done])
 ```
 
----
-
 ## Named cycles
 
-Cycles are the adaptive core — they let the flow recover from premature planning, missing context, or bad implementations without restarting. Each has a bounded re-entry point and a persistence contract.
+Cycles are the adaptive core. They let the flow recover from premature
+planning, missing context, or bad implementations without restarting. Each
+has a bounded re-entry point and a persistence contract.
 
-| ID    | Name                  | Trigger                                              | Re-entry point                                                                         |
-| ----- | --------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `C1`  | Plan revision         | Gate 1 rejection — user amends scope or architecture | Plan. Each revision diffs `CP-PLAN`; history kept. Expect 2-4 iterations.              |
-| `C1b` | Deeper context        | Gate 1 reveals Explore missed a critical area        | Explore with a scoped prompt. Only the gap is re-explored.                             |
-| `C1c` | Reframe problem       | Gate 1 reveals the problem itself was wrong          | HMW framing. Rare but valuable — EARS spec gets regenerated.                           |
-| `C2`  | In-task fix           | Lint / type / unit-test fail inside a subagent       | Same subagent via `SendMessage`. Cap 3 attempts; orchestrator escalates on attempt 4.  |
-| `C3`  | Missing prereq replan | Subagent reports "I need X that doesn't exist yet"   | Plan. Insert missing task, re-wire `addBlockedBy`, resume Act where safe.              |
-| `C4`  | Validation fail       | Any of 3 validation layers returns red               | Act. Re-open failing tasks with scoped fix packets. Validate re-runs.                  |
-| `C5`  | Human fix disposition | Gate 2 finding accepted by reviewer as "must fix"    | Act. Same as C4 with human-authored fix instructions.                                  |
-| `C6`  | Wave progression      | Current Act wave complete, more waves in plan        | Act. Self-loop with eager unblocking — launch next-wave tasks as their blockers clear. |
+| ID | Name | Trigger | Re-entry point |
+| --- | --- | --- | --- |
+| `C1` | Plan revision | Gate 1 rejection. User amends scope or architecture. | Plan. Each revision diffs `CP-PLAN`. History kept. Expect 2-4 iterations. |
+| `C1b` | Deeper context | Gate 1 reveals Explore missed a critical area. | Explore with a scoped prompt. Only the gap is re-explored. |
+| `C1c` | Reframe problem | Gate 1 reveals the problem itself was wrong. | HMW framing. Rare but valuable. EARS spec gets regenerated. |
+| `C2` | In-task fix | Lint, type, or unit-test fail inside a subagent. | Same subagent via `SendMessage`. Cap 3 attempts. Orchestrator escalates on attempt 4. |
+| `C3` | Missing prereq replan | Subagent reports a missing dependency. | Plan. Insert missing task, re-wire `addBlockedBy`, resume Act where safe. |
+| `C4` | Validation fail | Any of 3 validation layers returns red. | Act. Re-open failing tasks with scoped fix packets. Validate re-runs. |
+| `C5` | Human fix disposition | Gate 2 finding accepted by reviewer as "must fix". | Act. Same as C4 with human-authored fix instructions. |
+| `C6` | Wave progression | Current Act wave complete, more waves in plan. | Act. Self-loop with eager unblocking. Launch next-wave tasks as their blockers clear. |
 
-### Disambiguating C1 / C1b / C1c
+## Cycle protocols
 
-All three fire on Gate 1 rejection. Pick by the shape of the user's feedback:
+C1, C1b, and C1c all fire on Gate 1 rejection. Pick by the shape of the
+user's feedback. If scope or architecture is wrong, that is C1 (plan
+revision). If a specific part of the codebase was not explored, that is
+C1b (deeper context). If the problem statement itself was off, that is C1c
+(reframe HMW).
 
-- Scope or architecture is wrong → **C1** (plan revision).
-- A specific part of the codebase wasn't explored → **C1b** (deeper context).
-- The problem statement itself was off → **C1c** (reframe HMW).
+C2 protocol. Resume the same subagent with a scoped fix message. Cap at
+three attempts. On attempt 4 the orchestrator runs `CL-C2` against the
+packet, the agent's last output, and the error. See `classifiers.md` for
+the prompt. CL-C2 returns one of three values: `fix-directly` means the
+orchestrator applies a 1-2 line fix inline; `respawn` means a fresh agent
+on the same packet; `missing-prereq` routes to C3.
 
-### C2 protocol
+C3 protocol. Read the subagent's report, which includes its `summary`
+return and the packet's Work log. Seed a new prereq packet
+`tasks/T-AC-prereq-X.md` with `status: IN_PROGRESS` and `blocked_by: []`.
+Edit the original task's packet frontmatter to add `blocked_by:
+[T-AC-prereq-X]` and flip its status back to `BLOCKED`. Mirror with `/todo
+add` for visibility. Then `/spawn` the prereq subagent. When the prereq
+packet flips to `status: COMPLETE`, flip the original task back to
+`IN_PROGRESS` and `/spawn` it with updated context.
 
-Resume the same subagent with a scoped fix message. Cap at 3 attempts; on attempt 4 the orchestrator runs `CL-C2` (see `classifiers.md`) against the packet, the agent's last output, and the error. CL-C2 returns one of `fix-directly` (orchestrator applies 1-2 line fix inline), `respawn` (fresh agent, same packet), or `missing-prereq` (route to C3).
+Missing prereqs often indicate the EARS spec was incomplete. Consider
+revising `spec.md` so future sessions do not repeat the gap.
 
-### C3 protocol
+C4 and C5 protocol. Re-open only the failing tasks. Layer 1 re-runs on
+touched files only and is fast. Layers 2 and 3 re-run on the full diff.
 
-1. Read the subagent's report (its `summary` return + the packet's Work log).
-2. Seed a new prereq packet `tasks/T-AC-prereq-X.md` with `status: IN_PROGRESS`, `blocked_by: []`.
-3. Edit the original task's packet frontmatter to add `blocked_by: [T-AC-prereq-X]` and flip its status back to `BLOCKED`. Mirror with `/todo add` for visibility.
-4. `/spawn` the prereq subagent.
-5. When the prereq packet flips to `status: COMPLETE`, flip the original task back to `IN_PROGRESS` and `/spawn` it with updated context.
+C6 protocol. After every task completion, scan the dependency graph for
+tasks whose blockers are now clear. Launch them immediately, even if
+originally scheduled for a later wave. On a 26-task session this saves
+roughly 30 to 40 percent wall-clock time versus strict wave-by-wave
+execution.
 
-Missing prereqs often indicate the EARS spec was incomplete — consider revising `spec.md` so future sessions don't repeat the gap.
-
-### C4 / C5 protocol
-
-Re-open only the failing tasks. Layer 1 re-runs on touched files only (fast); Layers 2-3 re-run on the full diff.
-
-### C6 — eager unblocking
-
-After every task completion, scan the dependency graph for tasks whose blockers are now clear. Launch them immediately, even if originally scheduled for a later wave. On a 26-task session this saves ~30-40% wall-clock time versus strict wave-by-wave execution.
-
-Example: Wave 2 = [A, B, C]; Wave 3 = [D, E] where D depends only on A. When A completes, launch D — don't wait for B and C.
+Example. Wave 2 contains tasks A, B, and C. Wave 3 contains tasks D and E,
+where D depends only on A. When A completes, launch D. Do not wait for B
+and C.
