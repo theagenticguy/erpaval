@@ -1,5 +1,41 @@
 # Changelog
 
+## 1.3.0 — 2026-05-29 · Kiro mirror refresh (latest CLI)
+
+Refresh of the `kiro/` Claude Code → Kiro CLI port to track the latest
+Kiro CLI features, backed by a `/research` pass over kiro.dev docs
+(captured findings: fan-out, hooks, subagents, agent-config surface as
+of 2026-05-29).
+
+- Modernized built-in tool names across all three agent JSONs and every
+  hook matcher: `fs_read`→`read`, `fs_write`→`write`,
+  `execute_bash`→`shell`, `use_aws`→`aws`. The Q-era aliases still
+  resolve, but the canonical names are forward-safe. The
+  `kiro_validate_packet.py` runtime check accepts both spellings.
+- Dropped the experimental `delegate` tool from the orchestrator and
+  researcher agents — Kiro is replacing it with the official `subagent`
+  tool (already wired).
+- `postToolUse` packet validation documented as **advisory** — Kiro
+  `postToolUse` cannot block, so a malformed `.erpaval/` packet is
+  warned, not rejected (move to `preToolUse` + exit 2 for hard
+  rejection). Updated KIRO-COMPATIBILITY, AGENTS, SKILL mirror, and
+  context-packets to match.
+- Orchestrator prompt adopts the latest subagent patterns: the 4-per-
+  DAG-level concurrency cap, v2.5.0 in-pipeline review loops for the
+  Act→Validate→re-Act cycle, and v2.3 `$AGENT_DISPLAY_OUT` /
+  `$AGENT_CONTEXT_OUT` progress side-channels (alongside `wc -l` /
+  Ctrl+G monitoring).
+- KIRO-COMPATIBILITY headline + hook table rewritten for the nuanced
+  capability map (shell-only hooks, single blocking path, prompt-based
+  hooks gap), with a dated "re-check the changelog" caveat and a
+  `KIRO_HOME` note.
+- Corrected two lessons-store assumptions: the literal "No result"
+  subagent string is an empirical observation, not documented (don't
+  pattern-match on it); `/spawn --name` labels the session, not an agent
+  (already reflected in the runbook).
+- Synced `kiro/install.sh` `ERPAVAL_VERSION` (was stranded at 1.1.1).
+- Bump 1.2.0 → 1.3.0 (plugin.json + marketplace.json + install.sh).
+
 ## 1.2.0 — 2026-05-29 · fan-out + grounding sync
 
 Sync of the upstream `erpaval` and `product-discovery` skills, porting

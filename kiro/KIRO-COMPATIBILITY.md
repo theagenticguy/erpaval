@@ -5,16 +5,27 @@ gap shims, and migration playbook.
 
 ## Headline
 
-Three of erpaval's primitives are 1:1 with Kiro: Skills (the open Agent
-Skills standard), MCP, and the three hook events erpaval uses. Six gaps
-exist. All have shipped shims documented below.
+Two of erpaval's primitives are clean 1:1 with Kiro: Skills (the open Agent
+Skills standard) and MCP. Subagents map closely (the `subagent` tool, the 4-per-
+DAG-level cap, the `summary` return channel). Hooks map by event name but
+**lose capability**: Kiro hooks are shell-only (no prompt-based hooks), only
+`preToolUse` can block (via exit code 2), and `postToolUse`/`stop` are
+advisory. All gaps have shipped shims documented below.
 
-The 1:1 hook mapping is: `SessionStart` → `agentSpawn`, `PostToolUse` →
-`postToolUse`, `Stop` → `stop`.
+The hook event mapping is: `SessionStart` → `agentSpawn` (1:1),
+`UserPromptSubmit` → `userPromptSubmit` (1:1), `PreToolUse` → `preToolUse`
+(block via exit 2 only), `PostToolUse` → `postToolUse` (cannot block —
+packet validation is advisory), `Stop` → `stop` (advisory channel).
 
-The six gaps are: `${CLAUDE_PLUGIN_ROOT}` env var, plugin manifest, plugin
-namespacing, Stop-hook re-prompt channel, built-in `Explore` subagent, and
-`addBlockedBy` task deps.
+The gaps are: `${CLAUDE_PLUGIN_ROOT}` env var, plugin manifest, plugin
+namespacing, prompt-based hooks, blocking `PostToolUse`/`Stop` channels,
+built-in `Explore` subagent, and `addBlockedBy` task deps. Four Claude Code
+hook events — `SessionEnd`, `SubagentStop`, `PreCompact`, `Notification` —
+have no Kiro equivalent (erpaval uses none of them).
+
+> Verified against Kiro CLI docs as of 2026-05-29. Kiro CLI is on a fast
+> minor-version cadence (v2.2 → v2.5 in May 2026 alone) — re-check
+> [kiro.dev/changelog](https://kiro.dev/changelog/) before each refresh.
 
 ## Capability mapping
 
@@ -41,15 +52,17 @@ namespacing, Stop-hook re-prompt channel, built-in `Explore` subagent, and
 
 ### Hooks
 
-| Capability                                         | Status                 |
-| -------------------------------------------------- | ---------------------- |
-| SessionStart → agentSpawn                          | 1:1                    |
-| PostToolUse → postToolUse                          | 1:1                    |
-| Stop → stop                                        | 1:1, channel-different |
-| PreToolUse, UserPromptSubmit                       | 1:1                    |
-| SessionEnd, SubagentStop, PreCompact, Notification | gap, unused by erpaval |
-| Hook config location                               | partial                |
-| Plugin-root env var                                | gap, shimmed           |
+| Capability                                         | Status                  |
+| -------------------------------------------------- | ----------------------- |
+| SessionStart → agentSpawn                          | 1:1                     |
+| PostToolUse → postToolUse                          | partial, cannot block   |
+| Stop → stop                                        | partial, advisory only  |
+| PreToolUse → preToolUse                            | partial, exit-2 only    |
+| UserPromptSubmit → userPromptSubmit                | 1:1                     |
+| SessionEnd, SubagentStop, PreCompact, Notification | gap, unused by erpaval  |
+| Hook config location                               | inline in agent JSON    |
+| Hook trigger model (prompt-based hooks)            | gap, shell-only on Kiro |
+| Plugin-root env var                                | gap, shimmed            |
 
 ### MCP
 
@@ -157,9 +170,10 @@ This is the cost of a softer channel.
 
 Claude Code provides a built-in read-only Explore subagent. Kiro does not.
 `kiro/agents/erpaval-explorer.json` ships a custom agent with read-only
-tools (`read`, `grep`, `glob`, `execute_bash` with a deny list for
-destructive commands) and a system prompt that mirrors Claude Code's Explore
-behavior.
+tools (`read`, `grep`, `glob`, `shell` with a deny list for destructive
+commands) and a system prompt that mirrors Claude Code's Explore behavior.
+Kiro's read-only **Plan Agent** (`/plan`, v1.23.0) is an alternative for
+structured read-only planning.
 
 ### `addBlockedBy` task dependencies
 
@@ -171,10 +185,26 @@ progress only. The packets remain the source of truth.
 
 ### `Edit` tool separate from `Write`
 
-Kiro has no separate `Edit` tool. `fs_write` overwrites. Hook matchers
-target `fs_write` only, not `Write|Edit|MultiEdit` like Claude Code. Skills
-that document file edits use `fs_write` semantics: rewrite the file with
-the new content.
+Kiro has no separate `Edit` tool — the `write` tool (canonical name; `fs_write`
+is the deprecated Q-era alias) overwrites. Hook matchers target `write` only,
+not `Write|Edit|MultiEdit` like Claude Code. Skills that document file edits
+use `write` semantics: rewrite the file with the new content.
+
+> Tool-name modernization: this distribution emits the current canonical
+> built-in names (`read`, `write`, `shell`, `aws`) in every agent JSON and hook
+> matcher, not the deprecated Q-era aliases (`fs_read`, `fs_write`,
+> `execute_bash`, `use_aws`). The old names still resolve as aliases, but the
+> canonical names are forward-safe.
+
+### `postToolUse` cannot block — packet validation is advisory
+
+Claude Code's `PostToolUse` hook can reject a write. Kiro's `postToolUse`
+**cannot block** — any non-zero exit surfaces a warning but the write stands.
+`kiro_validate_packet.py` therefore runs as an advisory schema check: it warns
+on a malformed `.erpaval/` packet but does not reject it. If hard rejection is
+ever required, move the check to `preToolUse` on `write` and return exit code 2
+(the single blocking path in Kiro's hook model). The fail-open design is
+unchanged — `framework.run_hook` still catches exceptions and exits 0.
 
 ## Migration playbook
 
@@ -185,7 +215,8 @@ If you fork this plugin and want to maintain both distributions:
 2. Mirror updates into `kiro/skills/erpaval/` with the documented surface
    rewrites. `${CLAUDE_PLUGIN_ROOT}` becomes `${ERPAVAL_HOME}`. `templates/`
    becomes `assets/`. `tools/` becomes `scripts/`. Task tool refs become
-   filesystem state plus `/todo`.
+   filesystem state plus `/todo`. Built-in tool names use the canonical
+   forms (`read`/`write`/`shell`/`aws`), not the Q-era aliases.
 3. Run `bash kiro/install.sh --dry-run` to verify the install path.
 4. Install into a workspace `.kiro/` and run `kiro-cli chat --agent
    erpaval-orchestrator`.
@@ -198,7 +229,11 @@ by reading `skills/` and emitting `kiro/skills/`.
 Kiro's documented agent JSON schema does not specify `${VAR}` interpolation
 on field values. The installer sidesteps this by `sed`-substituting at
 install time. If Kiro ever adds first-class env-var expansion, the JSONs
-can be shipped verbatim.
+can be shipped verbatim. (Kiro's `mcp.json` *does* expand `${VAR}` in `env`
+and `headers`; agent-JSON field values do not, which is why `${ERPAVAL_HOME}`
+is resolved at install time, not by Kiro.) To relocate the whole Kiro home,
+Kiro honors `KIRO_HOME` (v2.3.0) — the installer's `--workspace`/default
+target is the analogue here.
 
 `kiro-cli` does not have a `kiro install` subcommand. Install is via
 cloning the repo and running `install.sh`.

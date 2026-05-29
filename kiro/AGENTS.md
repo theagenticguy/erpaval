@@ -50,7 +50,9 @@ kiro-cli chat --agent erpaval-orchestrator --trust-all-tools
 `--trust-all-tools` auto-approves every tool call so subagents can write,
 shell out, and call MCP servers without prompting. For unattended runs add
 `--no-interactive` and set `KIRO_API_KEY`. For least-privilege scoping use
-`--trust-tools=read,grep,glob,write,execute_bash` instead.
+`--trust-tools=read,grep,glob,write,shell` instead. (Trusted-command matching
+is a prefix string match, so prefer scoped `allowedTools` + `toolsSettings` in
+the agent JSON over a blanket `--trust-all-tools` for anything beyond dev/test.)
 
 All three agents pin `model: claude-opus-4-7`. Override per-invocation with
 `--model <id>` or edit the JSONs.
@@ -67,7 +69,7 @@ relative to it. This is the Kiro-distribution analogue of Claude Code's
 Three of Kiro's five hook events are wired (per the orchestrator agent JSON):
 
 - `agentSpawn` → `kiro_session_start_bootstrap.py` — emits prior-lesson summary on session start
-- `postToolUse` (matcher: `fs_write`) → `kiro_validate_packet.py` — Pydantic schema check on `.erpaval/` writes
+- `postToolUse` (matcher: `write`) → `kiro_validate_packet.py` — **advisory** Pydantic schema check on `.erpaval/` writes; Kiro `postToolUse` cannot block, so a malformed packet is warned, not rejected (move to `preToolUse` + exit 2 if hard rejection is ever needed)
 - `stop` → `kiro_compound_nudge.py` — **advisory only**; Kiro stop hooks cannot block-and-re-prompt the agent the way Claude Code's `Stop` channel does
 
 All hooks are fail-open (`framework.run_hook` catches exceptions and exits 0).

@@ -4,16 +4,15 @@
   "prompt": "file://./prompts/erpaval-orchestrator.md",
   "model": "claude-opus-4-7",
   "tools": [
-    "fs_read",
-    "fs_write",
+    "read",
+    "write",
     "glob",
     "grep",
-    "execute_bash",
-    "use_aws",
+    "shell",
+    "aws",
     "code",
     "introspect",
     "tool_search",
-    "delegate",
     "subagent",
     "summary",
     "knowledge",
@@ -56,7 +55,7 @@
     ],
     "postToolUse": [
       {
-        "matcher": "fs_write",
+        "matcher": "write",
         "command": "${ERPAVAL_HOME}/hooks/kiro_validate_packet.py",
         "timeout_ms": 10000
       }

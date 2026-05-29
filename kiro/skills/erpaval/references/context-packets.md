@@ -201,7 +201,7 @@ merge:
 
 ## Validation hook
 
-The `postToolUse` hook with `matcher: fs_write` (`kiro/hooks/kiro_validate_packet.py`, configured inline in `kiro/agents/erpaval-orchestrator.json`) runs on every write, early-exits on non-`.erpaval/` paths, and Pydantic-checks YAML packets plus per-task `.md` frontmatter against their schemas. On failure the hook prints a warning to STDERR — advisory, not blocking. Fail-open by construction so a hook bug can never wedge a session.
+The `postToolUse` hook with `matcher: write` (`kiro/hooks/kiro_validate_packet.py`, configured inline in `kiro/agents/erpaval-orchestrator.json`) runs on every write, early-exits on non-`.erpaval/` paths, and Pydantic-checks YAML packets plus per-task `.md` frontmatter against their schemas. On failure the hook prints a warning to STDERR — advisory, not blocking (Kiro `postToolUse` cannot reject a write). Fail-open by construction so a hook bug can never wedge a session.
 
 Per-task Markdown packet bodies (the 10 sections + work log) are intentionally unchecked — they're narrative work logs. Only the YAML frontmatter at the top carries validated structured metadata. Committed HMW/EARS outputs under `brainstorms/` and `specs/` are not validated — they're human-readable durables. Secrets scanning is a separate concern — use `gitleaks`, `trufflehog`, or GitHub push protection at repo level.
 

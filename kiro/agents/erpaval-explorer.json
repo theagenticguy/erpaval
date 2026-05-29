@@ -4,10 +4,10 @@
   "prompt": "file://./prompts/erpaval-explorer.md",
   "model": "claude-opus-4-7",
   "tools": [
-    "fs_read",
+    "read",
     "grep",
     "glob",
-    "execute_bash",
+    "shell",
     "code",
     "introspect",
     "tool_search",

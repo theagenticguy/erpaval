@@ -39,8 +39,9 @@ kiro-cli chat --agent erpaval-orchestrator --trust-all-tools
 The `--trust-all-tools` flag auto-approves every tool call, so subagents can
 write files, run shell commands, and call MCP servers without prompting. For
 unattended overnight runs, also pass `--no-interactive` and set
-`KIRO_API_KEY`. For tighter scoping, use `--trust-tools=read,grep,glob,write`
-instead of `--trust-all-tools`.
+`KIRO_API_KEY`. For tighter scoping, use `--trust-tools=read,grep,glob,write,shell`
+instead of `--trust-all-tools` — trusted-command matching is a prefix string
+match, so least-privilege scoping in the agent JSON is safer than a blanket flag.
 
 Then state your request. The orchestrator runs the classifiers (CL-SCOPE,
 CL-COMPLEXITY, CL-RESUME, CL-DIR, CL-RIGOR, CL-SPEC) to decide which phases

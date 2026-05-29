@@ -3,3 +3,4 @@ __pycache__/
 *.pyo
 .DS_Store
 .erpaval/sessions/
+research/

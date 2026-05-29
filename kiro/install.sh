@@ -20,7 +20,7 @@ set -euo pipefail
 # Constants
 # ---------------------------------------------------------------------------
 
-ERPAVAL_VERSION="1.1.1"
+ERPAVAL_VERSION="1.3.0"
 ERPAVAL_BUNDLE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Symlinks the installer manages. Format: "<source>::<dest-suffix>".

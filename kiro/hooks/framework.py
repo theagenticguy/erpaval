@@ -25,7 +25,7 @@ Usage from a UV shebang hook script:
     from framework import run_hook, emit_context, HookState, PostToolUseInput
 
     def handle(input, state):
-        if isinstance(input, PostToolUseInput) and input.tool_name == "fs_write":
+        if isinstance(input, PostToolUseInput) and input.tool_name == "write":
             emit_context("noted")  # exits 0
 
     if __name__ == "__main__":
