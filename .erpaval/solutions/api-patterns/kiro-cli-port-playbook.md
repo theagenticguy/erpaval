@@ -21,8 +21,10 @@ pattern: |
   - Hook events: SessionStart→agentSpawn, PostToolUse→postToolUse, Stop→stop,
     PreToolUse→preToolUse, UserPromptSubmit→userPromptSubmit
   - Subagents: `.kiro/agents/<n>.json` + `subagent` built-in tool, max 4 parallel
-  - Tools: fs_read↔Read, fs_write↔Write+Edit, execute_bash↔Bash, glob↔Glob,
-    grep↔Grep, web_fetch↔WebFetch, web_search↔WebSearch
+  - Tools (emit the canonical Kiro names; `fs_*`/`execute_bash`/`use_aws` are
+    deprecated Q-era aliases that still resolve): read↔Read, write↔Write+Edit,
+    shell↔Bash, aws↔(no CC equiv), glob↔Glob, grep↔Grep, web_fetch↔WebFetch,
+    web_search↔WebSearch
 
   ### Folder renames (3 of them)
   - `templates/` → `assets/`
@@ -46,8 +48,11 @@ pattern: |
     to act. Acceptable degradation.
   - Task dependencies: Kiro `/todo` lacks `addBlockedBy` / status workflow.
     Use filesystem state in task packets as authoritative, `/todo` for UI mirror.
-  - `Edit` tool: Kiro has no separate Edit. `fs_write` overwrites. Hook matchers
-    target `fs_write` only.
+  - `Edit` tool: Kiro has no separate Edit. The `write` tool overwrites. Hook
+    matchers target `write` only.
+  - `postToolUse` cannot block: a `postToolUse` validation hook can only warn,
+    not reject a write. For hard rejection, move the check to `preToolUse` +
+    exit code 2 (Kiro's single blocking path).
   - SessionEnd / SubagentStop / PreCompact / Notification hooks: not present
     in Kiro. erpaval doesn't use them, so no shim needed.
 

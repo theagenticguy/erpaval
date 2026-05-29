@@ -16,7 +16,7 @@ with `--trust-all-tools` on the CLI, the orchestrator and its subagents run
 without permission prompts — necessary for the autonomous overnight loop.
 
 For headless runs add `--no-interactive` and set `KIRO_API_KEY`. For
-least-privilege scoping use `--trust-tools=read,grep,glob,write,execute_bash`
+least-privilege scoping use `--trust-tools=read,grep,glob,write,shell`
 instead of `--trust-all-tools`.
 
 System prompts live as sibling Markdown files under `prompts/` and are pulled in via `file://` URIs in each agent JSON.
@@ -39,7 +39,7 @@ If you install by hand, replace every `${ERPAVAL_HOME}` in the JSONs with the ab
 The orchestrator hosts the three ERPAVal hooks inline (Kiro stores hooks per-agent rather than in a global `hooks.json`):
 
 - `agentSpawn` → `kiro_session_start_bootstrap.py` (emits prior-lesson summary)
-- `postToolUse` (matcher: `fs_write`) → `kiro_validate_packet.py` (Pydantic-checks `.erpaval/` writes)
+- `postToolUse` (matcher: `write`) → `kiro_validate_packet.py` (advisory Pydantic check on `.erpaval/` writes — `postToolUse` cannot block)
 - `stop` → `kiro_compound_nudge.py` (one-shot Compound-pending nudge)
 
 The researcher and explorer agents inherit no hooks — they are leaf subagents and don't drive the session loop.

@@ -39,9 +39,14 @@ pattern: |
     can return to later."*
   - **Not for orchestrator-driven delegation.**
 
-  ### Failure mode: silent "No result"
-  Symptoms: a subagent dispatch returns `Pipeline completed ... No result`
-  or an empty summary, even though the configs look correct.
+  ### Failure mode: silent empty / "No result"
+  Symptoms: a subagent dispatch returns an empty summary (observed as
+  `Pipeline completed ... No result` in practice), even though the configs
+  look correct. NOTE: the literal string "No result" is an empirical
+  observation, not documented in current kiro.dev docs (the Q ancestor used
+  "Summary unavailable - see full details in agent execution file"), and may
+  vary by Kiro version. Don't pattern-match on the exact string — treat any
+  empty/missing summary as this failure class. The fix is the same regardless.
 
   Common causes:
   1. **Subagent finished without calling `summary`.** The summary tool is
@@ -81,7 +86,7 @@ pattern: |
   And on each subagent:
   ```json
   {
-    "tools": ["fs_read", "grep", "glob", "execute_bash", "..."],
+    "tools": ["read", "grep", "glob", "shell", "..."],
     "allowedTools": ["*"]
   }
   ```

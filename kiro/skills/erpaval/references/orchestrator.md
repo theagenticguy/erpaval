@@ -310,7 +310,7 @@ Each subagent JSON must declare:
 
 ```json
 {
-  "tools": ["fs_read", "grep", "glob", "execute_bash", "..."],
+  "tools": ["read", "grep", "glob", "shell", "..."],
   "allowedTools": ["*"]
 }
 ```
@@ -331,7 +331,7 @@ In-chat NL is the *only* dispatch primitive for the orchestrator: `> Use the erp
 
 Subagents cannot dispatch sub-subagents (Kiro requires the `subagent` built-in tool to be in the agent's `tools` array; only the orchestrator has it). If a task needs nested delegation, break it into separate tasks.
 
-Tool access for Act subagents: `read` (`fs_read`), `write` (`fs_write`), `shell` (`execute_bash`), `glob`, `grep`. They do not need `web_fetch`, `web_search`, MCP tools, or `subagent` — if a subagent needs to research, the Research phase was incomplete. Go back and fill the gap.
+Tool access for Act subagents: `read`, `write`, `shell`, `glob`, `grep` (the canonical built-in names; `fs_read`/`fs_write`/`execute_bash` are deprecated Q-era aliases that still resolve). They do not need `web_fetch`, `web_search`, MCP tools, or `subagent` — if a subagent needs to research, the Research phase was incomplete. Go back and fill the gap.
 
 ---
 

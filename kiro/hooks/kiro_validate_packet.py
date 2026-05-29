@@ -6,8 +6,9 @@
 """postToolUse hook: validate `.erpaval/sessions/<id>/*.yaml` writes.
 
 Kiro fires `postToolUse` after each tool execution. This hook is intended
-to be wired with `matcher: "fs_write"` in the agent JSON, so it runs only
-after Kiro's canonical write tool. We still defensive-check `tool_name`.
+to be wired with `matcher: "write"` in the agent JSON (the canonical built-in
+write tool; `fs_write` is the deprecated Q-era alias), so it runs only after
+a write. We still defensive-check `tool_name` and accept either spelling.
 
 Early-exits for non-`.erpaval` paths and non-YAML/MD files. On schema
 violation, emits the error to STDOUT (Kiro's context channel) so the agent
@@ -198,9 +199,9 @@ def _mark_erpaval_active(session_id: str) -> None:
 def handle(input, state: HookState) -> None:
     if not isinstance(input, PostToolUseInput):
         return
-    # Defensive: agent JSON should already gate this with matcher: "fs_write",
-    # but accept the canonical name and the `write` alias.
-    if input.tool_name not in ("fs_write", "write"):
+    # Defensive: agent JSON should already gate this with matcher: "write",
+    # but accept the deprecated `fs_write` Q-era alias too.
+    if input.tool_name not in ("write", "fs_write"):
         return
 
     file_path = input.tool_input.get("file_path") or input.tool_input.get("path") or ""
