@@ -22,6 +22,17 @@ See `${CLAUDE_PLUGIN_ROOT}/skills/product-design-shared/references/double-diamon
 
 ---
 
+## Contents
+
+- Diamond 1 — Problem space
+  - Stage 1 — Discover (diverge)
+  - Stage 2 — Define (converge)
+- Diamond 2 — Solution space
+  - Stage 3 — Develop (diverge)
+  - Stage 4 — Deliver (converge)
+- Synthesis summary
+- Route forward
+
 ## Diamond 1 — Problem space
 
 ### Stage 1 — Discover (diverge)

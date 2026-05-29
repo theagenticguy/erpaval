@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "ERPAVal — autonomous software development workflow for Claude Code.",
-    "version": "1.1.1"
+    "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "erpaval",
       "source": "./",
       "description": "Six-phase Explore/Research/Plan/Act/Validate/Compound workflow with classifier-driven routing and a compounding lessons store.",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "author": { "name": "Laith Al-Saadoon" },
       "homepage": "https://github.com/theagenticguy/erpaval",
       "repository": "https://github.com/theagenticguy/erpaval",

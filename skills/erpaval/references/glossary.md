@@ -19,14 +19,14 @@ Worked examples throughout the skill use these tokens. Not literal strings — s
 
 ERPAVal has six phases. Each has a dedicated section in `SKILL.md`.
 
-| Phase        | Role                                                                            |
-| ------------ | ------------------------------------------------------------------------------- |
-| **Explore**  | Understand the codebase. Skipped when `CL-DIR` returns `empty` (greenfield).    |
-| **Research** | Fetch current API docs and version pins. Runs in parallel with Explore.         |
-| **Plan**     | Derive the task graph from the EARS spec (or from findings if no EARS was run). |
-| **Act**      | Implement via parallel subagents, one per leaf task.                            |
-| **Validate** | Three layers: static, code quality, security.                                   |
-| **Compound** | Extract lessons from the session and write to `.erpaval/solutions/`.            |
+| Phase        | Role                                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------------------ |
+| **Explore**  | Understand the codebase via 4–7 parallel perspective agents. Skipped when `CL-DIR` returns `empty` (greenfield).   |
+| **Research** | Fetch current API docs and version pins — one parallel agent per library/domain, grounded. Runs alongside Explore. |
+| **Plan**     | Derive the task graph from the EARS spec (or from findings if no EARS was run).                                    |
+| **Act**      | Implement via parallel subagents, one per leaf task, all wave tasks launched together.                             |
+| **Validate** | Three layers (static, quality, security); quality + security fan out to 4–8 parallel dimension agents.             |
+| **Compound** | Extract lessons from the session and write to `.erpaval/solutions/`.                                               |
 
 ## Context packets (`CP-*`)
 
@@ -77,6 +77,14 @@ Named re-entry loops. Full triggers and protocols in `flow.md`.
 ## Wave
 
 A set of Act-phase tasks with no dependencies between them — they run in parallel. Waves are not declared explicitly; they're derived from the task graph. A task joins wave N if every task it's `addBlockedBy` is in waves 1…N-1. Eager unblocking (C6) launches wave N+1 tasks as their individual blockers clear, without waiting for every wave N task to finish.
+
+## Fan-out
+
+Launching multiple subagents for one phase in a single message, in parallel, rather than running the phase as one agent or inline in the orchestrator thread. Explore (4–7 perspectives), Research (one per domain), Act (per wave task), and Validate (4–8 dimensions) all fan out. The discipline counters the default under-delegation of current Claude models. Per-phase counts and the one-message rule are in `fan-out.md`.
+
+## Grounding mandate
+
+The Research-phase rule that no library, API, or version claim leaves `CP-RESEARCH` without a current-docs citation — Context7 first for library work, then the search MCP fleet per `${CLAUDE_PLUGIN_ROOT}/skills/research/references/search-strategies.md`. An un-grounded `version_pin` or `api_surface` blocks Plan. Recorded per library via `grounded` / `sources` / `retrieved_via` in `research-<domain>.yaml`.
 
 ## EARS acceptance criterion (`AC-<story>-<n>`)
 

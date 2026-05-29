@@ -7,6 +7,43 @@
 
 ---
 
+## Contents
+
+- Executive Summary
+- Product Vision
+- Goals and Non-Goals
+  - Goals
+  - Non-Goals
+- User Personas
+  - [FILL: Persona 1 Name] — [FILL: Archetype]
+  - [FILL: Persona 2 Name] — [FILL: Archetype]
+- Functional Requirements
+  - 5.1 User Stories
+  - 5.2 Feature List
+- Information Architecture
+- Non-Functional Requirements
+  - 7.1 Performance
+  - 7.2 Security
+  - 7.3 Scalability
+  - 7.4 Accessibility
+  - 7.5 Reliability
+  - 7.6 Observability
+- Data Models
+  - 8.1 Entity Definitions
+  - 8.2 Relationships
+  - 8.3 Indexes
+- API Contracts
+  - 9.1 API Design Principles
+  - 9.2 Endpoints
+- Edge Cases and Error States
+- Competitive Landscape
+- Milestones
+  - MVP (Milestone 1)
+  - v1.0 (Milestone 2)
+- Open Questions
+- Assumptions Log
+- Tech Stack Requirements Extract
+
 ## 1. Executive Summary
 
 [FILL: 3-5 sentences. What is this product? Who is it for? Why does it need to exist? What makes it unique?]

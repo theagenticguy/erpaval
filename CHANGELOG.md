@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.2.0 — 2026-05-29 · fan-out + grounding sync
+
+Sync of the upstream `erpaval` and `product-discovery` skills, porting
+the substantive improvements while preserving the standalone fork's
+own framing and paths.
+
+- New `skills/erpaval/references/fan-out.md` — single source of truth
+  for per-phase subagent counts and the one-message parallel-launch
+  rule (Explore 4–7 perspectives, Research one per domain, Act per
+  wave task, Validate 4–8 dimensions)
+- Fan-out discipline threaded through `SKILL.md`, `flow.md`,
+  `glossary.md`, `orchestrator.md` — single-agent execution of a
+  fan-out phase is now called out as a bug, not a shortcut
+- Research grounding mandate: no library / version / API claim leaves
+  `CP-RESEARCH` un-grounded (Context7-first, then the search MCP
+  fleet); blocks Plan until every library entry records its grounding
+- `validation-playbook.md`: Layer 2/3 fan out into parallel Opus
+  dimension reviewers, plus a per-finding adversarial-verification
+  pass before Gate 2
+- `templates/session/research.yaml`: `docs_source` → `grounded` /
+  `retrieved_via` / `sources` so grounding is recorded per library
+- Renamed `task-skeleton.md` → `worklog-skeleton.md` (added a Contents
+  section); propagated through SKILL.md, `context-packets.md`,
+  `orchestrator.md`, README
+- `product-discovery`: Contents tables of contents across references
+  and templates; load-bearing parallel-subagent nudge in the
+  orchestrator
+- Preserved fork divergences: hooks at `hooks/` (not
+  `personal-plugins/hooks/`), "workflow" framing, and routing to
+  bundled skills (`/working-backwards`, `/customer-research`,
+  `/meta-prompt-optimizer`) instead of `/presentation`
+- Repo-wide `dprint fmt` pass clears pre-existing table-alignment
+  drift so `mise run build` is green
+
 ## 1.1.1 — 2026-05-11 · launch polish
 
 - Self-installing marketplace at `.claude-plugin/marketplace.json` —

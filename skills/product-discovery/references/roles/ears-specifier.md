@@ -8,6 +8,17 @@ This role is the public entry point for `erpaval`'s CL-RIGOR classifier on `cont
 
 ---
 
+## Contents
+
+- When to run (vs. skip)
+- The five EARS templates (Mavin et al. 2009)
+- Numbering
+- Dependency annotation
+- EARS → TaskList derivation (for downstream orchestrators)
+- Process
+- Quality bar
+- Citations
+
 ## When to run (vs. skip)
 
 Run when the feature touches a public API, a behavior-critical path with multiple valid "done" interpretations, has high regression risk (auth, billing, data integrity), or will be decomposed into parallel tasks that must not conflict.

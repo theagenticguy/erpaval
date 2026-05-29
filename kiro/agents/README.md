@@ -4,11 +4,11 @@ Three custom agent JSONs that port the ERPAVal methodology onto Kiro CLI.
 
 ## The three agents
 
-| Agent | Role | Invoke |
-|---|---|---|
-| `erpaval-orchestrator` | Main entry point. Runs ERPAVal phases (Explore/Research/Plan/Act/Validate/Compound), spawns subagents, hosts the three hooks. | `kiro-cli chat --agent erpaval-orchestrator --trust-all-tools` |
-| `erpaval-researcher` | Library / API / framework research. Used by the orchestrator's Research phase; spawnable directly for ad-hoc lookups. | `kiro-cli chat --agent erpaval-researcher --trust-all-tools` (or via `subagent` from the orchestrator) |
-| `erpaval-explorer` | Read-only codebase reconnaissance. Replaces Claude Code's built-in Explore subagent (Kiro has no equivalent). | Spawned via `subagent` from the orchestrator; standalone with `kiro-cli chat --agent erpaval-explorer --trust-all-tools` |
+| Agent                  | Role                                                                                                                          | Invoke                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `erpaval-orchestrator` | Main entry point. Runs ERPAVal phases (Explore/Research/Plan/Act/Validate/Compound), spawns subagents, hosts the three hooks. | `kiro-cli chat --agent erpaval-orchestrator --trust-all-tools`                                                           |
+| `erpaval-researcher`   | Library / API / framework research. Used by the orchestrator's Research phase; spawnable directly for ad-hoc lookups.         | `kiro-cli chat --agent erpaval-researcher --trust-all-tools` (or via `subagent` from the orchestrator)                   |
+| `erpaval-explorer`     | Read-only codebase reconnaissance. Replaces Claude Code's built-in Explore subagent (Kiro has no equivalent).                 | Spawned via `subagent` from the orchestrator; standalone with `kiro-cli chat --agent erpaval-explorer --trust-all-tools` |
 
 All three pin `model: claude-opus-4-7` (Anthropic's latest coding model) and
 set `allowedTools: ["*"]` so every declared tool is pre-approved. Combined

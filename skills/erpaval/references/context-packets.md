@@ -6,6 +6,24 @@ Packets use session IDs (random hex, e.g., `session-a1b2c3`) and sequence number
 
 **Reading convention for the YAML blocks below.** Each example shows a worked OAuth-PKCE session so fields line up across packets. Angle-bracket tokens (`<excerpt from CP-EXPLORE>`) are placeholders. Concrete values (`session-a1b2c3`, `003-oauth-pkce`, `src/auth`) are illustrative. Placeholder conventions (`<hex>`, `NNN`, `<slug>`, `<domain>`) live in `glossary.md`.
 
+## Contents
+
+- Packet index
+- CP-INTAKE
+- CP-RECALL
+- CP-EXPLORE
+- CP-RESEARCH
+- CP-TASK-N
+- CP-VALIDATION
+- CP-LESSONS
+- CP-SESSION
+- Validation hook
+- Zone rules
+- Two-gate review model
+  - Gate 1 — Plan review (before Act)
+  - Gate 2 — Validation report review (before merge)
+  - Auto-merge criteria
+
 ## Packet index
 
 | Packet        | Path                                                                   | Written by             | Read by                             |
@@ -89,7 +107,10 @@ domain: OAuth + PKCE libraries
 libraries:
   - name: authlib
     version_pin: "^1.3"
-    docs_source: context7
+    grounded: true
+    retrieved_via: context7
+    sources:
+      - https://docs.authlib.org/en/latest/client/starlette.html
     api_surface:
       - authlib.integrations.starlette_client.OAuth
     breaking_changes: 1.2 → 1.3 removed sync client; async-only
@@ -99,7 +120,7 @@ libraries:
 
 ## CP-TASK-N
 
-Per-task packets are Markdown, not YAML — they double as subagent work logs edited section-by-section via `write-protocol.md`. Seed from `templates/session/task-skeleton.md`; filename is `T-AC-X-Y.md`.
+Per-task packets are Markdown, not YAML — they double as subagent work logs edited section-by-section via `write-protocol.md`. Seed from `templates/session/worklog-skeleton.md`; filename is `T-AC-X-Y.md`.
 
 Structure:
 
@@ -108,7 +129,7 @@ Structure:
 - Sections 1-10: Objective · Scope · EARS requirement · Architecture context · API contracts · Conventions · Dependencies · Prior lessons · Success criteria · Anti-goals.
 - Work log, Validation, Summary — filled by the subagent as it proceeds.
 
-See `templates/session/task-skeleton.md` for the canonical skeleton.
+See `templates/session/worklog-skeleton.md` for the canonical skeleton.
 
 ## CP-VALIDATION
 

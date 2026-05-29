@@ -4,9 +4,25 @@ Each classifier is a runtime prompt the orchestrator runs against the current co
 
 Terms like `CP-INTAKE`, `CL-DIR`, `Gate 0/1/2` are defined in `glossary.md`.
 
+## Contents
+
+- Prompt conventions
+- CL-SCOPE — is this a coding task?
+- CL-REFINE — did the user return with a build ask?
+- CL-COMPLEXITY — is ERPAVal warranted?
+- CL-RESUME — new session or resume a prior one?
+- CL-DIR — directory probe
+- CL-RIGOR — does the problem need HMW or EARS?
+- CL-SPEC — are prerequisites ready?
+- CL-VALIDATE — validation verdict
+- CL-C2 — attempt-4 escalation disposition
+- CL-DISP — human disposition of Gate 2 findings
+- CL-LESSONS — did the session produce novel learnings?
+- Classifier trace
+
 ## Prompt conventions
 
-Every classifier below uses the same shape so Opus 4.7 parses consistently:
+Every classifier below uses the same shape so Opus parses consistently:
 
 - `<role>` states the classifier ID and the strict-JSON output rule.
 - `<input>` names the packet fields the classifier reads, bound with `{{ templating }}`. The orchestrator substitutes real values before invocation.

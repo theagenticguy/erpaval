@@ -21,6 +21,7 @@ description: >
 | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | `references/flow.md`                                                                | The graph — intake, build loop, validate/compound, cycles                         |
 | `references/classifiers.md`                                                         | Prompt text for each `CL-*` classifier                                            |
+| `references/fan-out.md`                                                             | Per-phase subagent counts + the one-message parallel-launch rule                  |
 | `references/glossary.md`                                                            | `CP-*`, `CL-*`, gates, cycles, zones, placeholder tokens                          |
 | `${CLAUDE_PLUGIN_ROOT}/skills/product-discovery/references/roles/hmw-framer.md`     | HMW substep (hard-dep on `product-discovery`; run when `CL-RIGOR` asks for HMW)   |
 | `${CLAUDE_PLUGIN_ROOT}/skills/product-discovery/references/roles/ears-specifier.md` | EARS substep (hard-dep on `product-discovery`; run when `CL-RIGOR` asks for EARS) |
@@ -29,7 +30,7 @@ description: >
 | `references/write-protocol.md`                                                      | Canonical write-protocol block (copied into every Act prompt)                     |
 | `references/validation-playbook.md`                                                 | 3-layer validation + closed-loop toolchain                                        |
 | `references/compound.md`                                                            | Dual-track lesson schema + recall retrieval algorithm                             |
-| `templates/session/task-skeleton.md`                                                | Per-task packet skeleton with embedded write protocol                             |
+| `templates/session/worklog-skeleton.md`                                             | Per-task packet skeleton with embedded write protocol                             |
 | `templates/session/`                                                                | YAML schemas the orchestrator seeds into `.erpaval/sessions/<id>/` at runtime     |
 | `templates/specs/`                                                                  | EARS spec and task-list skeletons for the Framing substep                         |
 | `templates/solutions/`                                                              | Lesson templates (bug, knowledge) the Compound phase writes from                  |
@@ -73,11 +74,11 @@ flowchart LR
 
 Full three-view graph with every cycle is in `references/flow.md`. Dashed edges are named cycles.
 
-## Strict phase gating via Task tools
+## Strict phase gating via TaskCreate / TaskUpdate / TaskList
 
-Each phase has a completion gate enforced by `TaskCreate` / `TaskUpdate` / `TaskList`. Every implementation task is wired with `addBlockedBy` so the task system itself prevents out-of-order execution. No skipping, no parallel execution across gates, no early starts.
+Each phase has a completion gate enforced by the `TaskCreate` / `TaskUpdate` / `TaskList` todo-list tool family (distinct from the `Agent` subagent-launcher). Every implementation task is wired with `addBlockedBy` so the task system itself prevents out-of-order execution. No skipping, no parallel execution across gates, no early starts.
 
-Task tools hold authoritative state. YAML packets under `.erpaval/sessions/` are read-only hints that inform which tasks to create and what goes in their `prompt`. Per-task Markdown packets at `.erpaval/sessions/<id>/tasks/T-AC-X-Y.md` double as subagent work logs — the agent edits them section-by-section per `write-protocol.md`, and the orchestrator monitors with `wc -l`. Partial progress on disk survives timeouts and SendMessage interrupts; state held in working memory does not.
+The todo-list tools hold authoritative state. YAML packets under `.erpaval/sessions/` are read-only hints that inform which tasks to create and what goes in their `prompt`. Per-task Markdown packets at `.erpaval/sessions/<id>/tasks/T-AC-X-Y.md` double as subagent work logs — the agent edits them section-by-section per `write-protocol.md`, and the orchestrator monitors with `wc -l`. Partial progress on disk survives timeouts and SendMessage interrupts; state held in working memory does not.
 
 See `references/orchestrator.md` for the per-phase runbook.
 
@@ -123,17 +124,36 @@ Skip both when the ask names a specific user segment, an observable outcome with
 
 ## Phase summary
 
-| Phase        | Purpose                                 | Execution method                                                         | Parallelizable with  |
-| ------------ | --------------------------------------- | ------------------------------------------------------------------------ | -------------------- |
-| **Explore**  | Build mental model of the codebase      | Parallel `Agent` (`Explore` subagents — split by module, single message) | Research             |
-| **Research** | Fetch live API docs, versions, patterns | Parallel `Agent` (`researcher` — split by domain, single message)        | Explore              |
-| **Plan**     | Derive tasks from EARS spec + deps      | Orchestrator + `TaskCreate`/`TaskUpdate`                                 | None (needs E+R)     |
-| **Act**      | Implement via parallel `Agent` calls    | One message per wave, all tasks in `run_in_background=true`              | Per dependency graph |
-| **Validate** | Verify correctness, quality, security   | `Agent` tool (Opus) + static tools                                       | Partially            |
-| **Compound** | Extract lessons from session            | Orchestrator + `compound.md` procedure                                   | None (post-merge)    |
+| Phase        | Purpose                                 | Execution method                                        | Parallelizable with  |
+| ------------ | --------------------------------------- | ------------------------------------------------------- | -------------------- |
+| **Explore**  | Build mental model of the codebase      | **4–7 parallel `Explore` agents** (one per perspective) | Research             |
+| **Research** | Fetch live API docs, versions, patterns | **Parallel `researcher` agents** — one per domain       | Explore              |
+| **Plan**     | Derive tasks from EARS spec + deps      | Orchestrator + `TaskCreate`/`TaskUpdate`                | None (needs E+R)     |
+| **Act**      | Implement via parallel `Agent` calls    | **All wave tasks in one message**, `run_in_background`  | Per dependency graph |
+| **Validate** | Verify correctness, quality, security   | **4–8 parallel Opus dimension agents** + static tools   | Partially            |
+| **Compound** | Extract lessons from session            | Orchestrator + `compound.md` procedure                  | None (post-merge)    |
 
-> Research agents start with `date +"%Y-%m-%d"` (always) and `context7` (for library/API/SDK lookups).
-> Default recency window is the last 6 months — agentic-AI libraries change monthly.
+Subagent counts per phase live in `references/fan-out.md`. Every phase except
+Plan and Compound fans out to multiple parallel `Agent` calls launched in **one
+message** — current Claude models under-delegate by default, so running a
+fan-out phase as a single agent (or inline in the orchestrator thread) is a bug,
+not a shortcut.
+
+## Fan-out and grounding are the default, not the exception
+
+Two standing rules govern every session. Both counteract failure modes the
+orchestrator falls into when left to its own defaults.
+
+- **Fan out wide, every phase.** Explore, Research, Act waves, and Validate all
+  launch multiple subagents in parallel in a single message. The targets and the
+  one-message launch discipline are in `references/fan-out.md`. The orchestrator
+  coordinates; the subagents do the work.
+- **Ground before you build.** No code is written against a library, API, or
+  version that the Research phase hasn't grounded in current docs first —
+  Context7 (`resolve-library-id` → `query-docs`) for library work, then the
+  search MCP fleet per `${CLAUDE_PLUGIN_ROOT}/skills/research/references/search-strategies.md`.
+  An un-grounded version pin or API surface in `CP-RESEARCH` blocks Plan. See
+  `references/orchestrator.md` § Research for the mandate.
 
 ## When to use ERPAVal
 
@@ -206,13 +226,13 @@ Compound can also run ad-hoc when the user wants to force-extract lessons mid-se
 
 ### Phase-level agent mapping
 
-| Phase    | Agent used                                                           |
-| -------- | -------------------------------------------------------------------- |
-| Explore  | Built-in `Explore` subagent                                          |
-| Research | Plugin `researcher` agent                                            |
-| Act      | `general-purpose` subagents (haiku/sonnet/opus per task)             |
-| Validate | `opus` subagents for code quality and security review                |
-| Compound | Orchestrator + `compound.md` procedure (invokes opus for CL-LESSONS) |
+| Phase    | Agent used                                                                           |
+| -------- | ------------------------------------------------------------------------------------ |
+| Explore  | 4–7 parallel built-in `Explore` subagents, one per perspective                       |
+| Research | Parallel plugin `researcher` agents, one per library/domain                          |
+| Act      | `general-purpose` subagents (haiku/sonnet/opus per task), all wave tasks in parallel |
+| Validate | 4–8 parallel `opus` subagents, one per quality/security dimension                    |
+| Compound | Orchestrator + `compound.md` procedure (invokes opus for CL-LESSONS)                 |
 
 ## Tools and hooks
 

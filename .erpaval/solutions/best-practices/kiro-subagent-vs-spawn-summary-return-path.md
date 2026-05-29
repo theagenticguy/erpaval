@@ -108,6 +108,7 @@ example_files:
 
 Kiro's subagent semantics differ from Claude Code's in three ways that
 ERPAVal currently glosses over:
+
 - `/spawn` is user-driven (not the agent's delegation primitive)
 - Subagents fail-fast instead of hanging on approval prompts
 - The `summary` tool is the ONLY return path
@@ -121,11 +122,13 @@ addressed.
 # Example
 
 Wrong (per docs):
+
 ```
 /spawn --name validate-quality "Code quality review per validation-playbook.md..."
 ```
 
 Right (per docs):
+
 ```
 > Use the erpaval-explorer agent to do an L2 code-quality review per
   validation-playbook.md. Read all files under blog/, apply the L2
@@ -134,6 +137,7 @@ Right (per docs):
 ```
 
 Verification when a subagent returns empty:
+
 1. Confirm the subagent's prompt explicitly demanded a `summary` call
 2. Check parent's `trustedAgents` includes the subagent name
 3. Check subagent's `allowedTools` covers everything the task needs

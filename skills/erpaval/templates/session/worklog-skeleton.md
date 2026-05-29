@@ -28,6 +28,22 @@ If a check fails (lint, type, test, semgrep): write the failure here, then fix, 
 When every section has real content and every success criterion is checked off, change `status: IN_PROGRESS` in the frontmatter to `status: COMPLETE`.
 </write_protocol>
 
+## Contents
+
+- Objective
+- Scope
+- EARS requirement
+- Architecture context
+- API contracts
+- Conventions
+- Dependencies
+- Prior lessons
+- Success criteria
+- Anti-goals
+- Work log
+- Validation
+- Summary
+
 ## 1. Objective
 
 {{ one-sentence objective }}

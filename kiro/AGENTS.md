@@ -83,13 +83,13 @@ PEP 723 Python scripts under `kiro/skills/erpaval/scripts/`. Run with `uv run`:
 
 ## Differences from the Claude Code distribution
 
-| Concern | Claude Code | Kiro |
-| --- | --- | --- |
-| Plugin root env var | `${CLAUDE_PLUGIN_ROOT}` | `${ERPAVAL_HOME}` (set by installer) |
-| Hook config | `hooks/hooks.json` (plugin-global) | `hooks` field inside the orchestrator agent JSON |
-| Stop channel | `decision: "block" + reason` (re-prompts) | STDOUT to context (advisory) |
-| Built-in Explore | `subagent_type: "Explore"` | bundled `erpaval-explorer` custom agent |
-| Task deps | `addBlockedBy` enforced by `TaskCreate/TaskUpdate` | filesystem-driven; `/todo` is advisory UI |
+| Concern             | Claude Code                                        | Kiro                                             |
+| ------------------- | -------------------------------------------------- | ------------------------------------------------ |
+| Plugin root env var | `${CLAUDE_PLUGIN_ROOT}`                            | `${ERPAVAL_HOME}` (set by installer)             |
+| Hook config         | `hooks/hooks.json` (plugin-global)                 | `hooks` field inside the orchestrator agent JSON |
+| Stop channel        | `decision: "block" + reason` (re-prompts)          | STDOUT to context (advisory)                     |
+| Built-in Explore    | `subagent_type: "Explore"`                         | bundled `erpaval-explorer` custom agent          |
+| Task deps           | `addBlockedBy` enforced by `TaskCreate/TaskUpdate` | filesystem-driven; `/todo` is advisory UI        |
 
 See `KIRO-COMPATIBILITY.md` for the full 30-row capability mapping table.
 

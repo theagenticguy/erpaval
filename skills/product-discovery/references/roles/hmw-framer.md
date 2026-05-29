@@ -8,6 +8,15 @@ This role is also the public entry point for `erpaval`'s CL-RIGOR classifier. Wh
 
 ---
 
+## Contents
+
+- When to run (vs. skip)
+- Step 1 — Customer problem statement
+- Step 2 — Pick 3 of 9 d.school strategies
+- Step 3 — Generate 3-5 HMW statements
+- Step 4 — NN/g validation
+- Citations
+
 ## When to run (vs. skip)
 
 Run when the user framed the ask as a solution ("build a dashboard"), used emotional language ("users hate this"), or the stakes are high but the motivation is unclear.

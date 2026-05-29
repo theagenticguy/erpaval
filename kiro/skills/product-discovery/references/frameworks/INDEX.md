@@ -6,16 +6,16 @@ First thing a product-discovery orchestrator or role reads when deciding which f
 
 Reach for a discovery framework when the user has a situation but not a solution, when insights are mounting but the problem statement has not been sharpened, when stakeholders disagree on what to build because they disagree on what the real problem is. Discovery frameworks convert "we should look at X" into a bounded, framed, research-grounded question set that a downstream PRD or spec can execute against.
 
-| User signal / ask                                        | Framework file                                                                    | One-line why                                                                          |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| User signal / ask                                        | Framework file                                                              | One-line why                                                                          |
+| -------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | "We need to run a discovery round"                       | `${ERPAVAL_HOME}/skills/product-design-shared/references/double-diamond.md` | Gives the team a shared cadence — diverge, converge, diverge, converge.               |
 | "We have a fuzzy problem and no obvious owner framework" | `${ERPAVAL_HOME}/skills/product-design-shared/references/double-diamond.md` | The diamond structure surfaces the ownership question naturally.                      |
 | "The team keeps converging too early"                    | `${ERPAVAL_HOME}/skills/product-design-shared/references/double-diamond.md` | The divergent-then-convergent rhythm is literally why this framework exists.          |
-| "Turn these interview notes into opportunity questions"  | `how-might-we.md`                                                                 | Converts research-backed observations into 3-5 outcome-level frames.                  |
-| "Reframe this — it feels solution-shaped"                | `how-might-we.md`                                                                 | The 9-strategy move set is built for solution-hidden problems.                        |
-| "We're at the 'we have insights' phase"                  | `how-might-we.md`                                                                 | HMW converges insights into outcome-level questions without committing to a solution. |
-| "Who is hiring this product and for what job?"           | `jtbd-job-stories.md`                                                             | Centers situations and motivation; strips out persona noise.                          |
-| "Write job stories from these customer interviews"       | `jtbd-job-stories.md`                                                             | Klement's "When/I want/So I can" shape is the canonical JTBD output.                  |
+| "Turn these interview notes into opportunity questions"  | `how-might-we.md`                                                           | Converts research-backed observations into 3-5 outcome-level frames.                  |
+| "Reframe this — it feels solution-shaped"                | `how-might-we.md`                                                           | The 9-strategy move set is built for solution-hidden problems.                        |
+| "We're at the 'we have insights' phase"                  | `how-might-we.md`                                                           | HMW converges insights into outcome-level questions without committing to a solution. |
+| "Who is hiring this product and for what job?"           | `jtbd-job-stories.md`                                                       | Centers situations and motivation; strips out persona noise.                          |
+| "Write job stories from these customer interviews"       | `jtbd-job-stories.md`                                                       | Klement's "When/I want/So I can" shape is the canonical JTBD output.                  |
 
 ## Spec frameworks — when to use
 

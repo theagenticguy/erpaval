@@ -20,24 +20,24 @@ compatibility: Designed for Kiro CLI (open Agent Skills standard). Compatible wi
 
 ## Contents
 
-| Reference                                                                           | When to load                                                                      |
-| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `references/flow.md`                                                                | The graph — intake, build loop, validate/compound, cycles                         |
-| `references/classifiers.md`                                                         | Prompt text for each `CL-*` classifier                                            |
-| `references/glossary.md`                                                            | `CP-*`, `CL-*`, gates, cycles, zones, placeholder tokens                          |
-| `${ERPAVAL_HOME}/skills/product-discovery/references/roles/hmw-framer.md`           | HMW substep (hard-dep on `product-discovery`; run when `CL-RIGOR` asks for HMW)   |
-| `${ERPAVAL_HOME}/skills/product-discovery/references/roles/ears-specifier.md`       | EARS substep (hard-dep on `product-discovery`; run when `CL-RIGOR` asks for EARS) |
-| `references/orchestrator.md`                                                        | Per-phase runbook — NL subagent dispatch, filesystem-driven gates, `/todo` mirror, `summary` return contract |
-| `references/context-packets.md`                                                     | Per-packet YAML schemas + two-gate review + auto-merge rules                      |
-| `references/write-protocol.md`                                                      | Canonical write-protocol block (copied into every Act prompt)                     |
-| `references/validation-playbook.md`                                                 | 3-layer validation + closed-loop toolchain                                        |
-| `references/compound.md`                                                            | Dual-track lesson schema + recall retrieval algorithm                             |
-| `assets/session/task-skeleton.md`                                                   | Per-task packet skeleton with embedded write protocol                             |
-| `assets/session/`                                                                   | YAML schemas the orchestrator seeds into `.erpaval/sessions/<id>/` at runtime     |
-| `assets/specs/`                                                                     | EARS spec and task-list skeletons for the Framing substep                         |
-| `assets/solutions/`                                                                 | Lesson templates (bug, knowledge) the Compound phase writes from                  |
-| `assets/brainstorms/`                                                               | HMW requirement skeletons for the Framing substep                                 |
-| `assets/INDEX.md`                                                                   | Recall-phase index of lessons by category, read at session start                  |
+| Reference                                                                     | When to load                                                                                                 |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `references/flow.md`                                                          | The graph — intake, build loop, validate/compound, cycles                                                    |
+| `references/classifiers.md`                                                   | Prompt text for each `CL-*` classifier                                                                       |
+| `references/glossary.md`                                                      | `CP-*`, `CL-*`, gates, cycles, zones, placeholder tokens                                                     |
+| `${ERPAVAL_HOME}/skills/product-discovery/references/roles/hmw-framer.md`     | HMW substep (hard-dep on `product-discovery`; run when `CL-RIGOR` asks for HMW)                              |
+| `${ERPAVAL_HOME}/skills/product-discovery/references/roles/ears-specifier.md` | EARS substep (hard-dep on `product-discovery`; run when `CL-RIGOR` asks for EARS)                            |
+| `references/orchestrator.md`                                                  | Per-phase runbook — NL subagent dispatch, filesystem-driven gates, `/todo` mirror, `summary` return contract |
+| `references/context-packets.md`                                               | Per-packet YAML schemas + two-gate review + auto-merge rules                                                 |
+| `references/write-protocol.md`                                                | Canonical write-protocol block (copied into every Act prompt)                                                |
+| `references/validation-playbook.md`                                           | 3-layer validation + closed-loop toolchain                                                                   |
+| `references/compound.md`                                                      | Dual-track lesson schema + recall retrieval algorithm                                                        |
+| `assets/session/task-skeleton.md`                                             | Per-task packet skeleton with embedded write protocol                                                        |
+| `assets/session/`                                                             | YAML schemas the orchestrator seeds into `.erpaval/sessions/<id>/` at runtime                                |
+| `assets/specs/`                                                               | EARS spec and task-list skeletons for the Framing substep                                                    |
+| `assets/solutions/`                                                           | Lesson templates (bug, knowledge) the Compound phase writes from                                             |
+| `assets/brainstorms/`                                                         | HMW requirement skeletons for the Framing substep                                                            |
+| `assets/INDEX.md`                                                             | Recall-phase index of lessons by category, read at session start                                             |
 
 # ERPAVal — adaptive autonomous software development
 
@@ -119,7 +119,7 @@ See `references/classifiers.md` for each classifier's prompt text.
 
 ## Optional rigor — HMW + EARS
 
-`CL-RIGOR` decides whether to run these substeps. Both are well-suited to subagent delegation (bounded creative task, durable file output). erpaval hard-deps on `product-discovery` for these substeps: the orchestrator seeds `brainstorms/NNN-<slug>-requirements.md` or `specs/NNN-<slug>/spec.md` from `${ERPAVAL_HOME}/skills/product-discovery/assets/hmw-skeleton.md` / `ears-spec-skeleton.md` and dispatches one general-purpose subagent per substep that reads `${ERPAVAL_HOME}/skills/product-discovery/references/roles/hmw-framer.md` (or `ears-specifier.md`) as its role prompt. Dispatch via in-chat NL: `> Use a general-purpose agent to frame this as HMW per the role prompt at …; final step: call the built-in `summary` tool with the framing.`
+`CL-RIGOR` decides whether to run these substeps. Both are well-suited to subagent delegation (bounded creative task, durable file output). erpaval hard-deps on `product-discovery` for these substeps: the orchestrator seeds `brainstorms/NNN-<slug>-requirements.md` or `specs/NNN-<slug>/spec.md` from `${ERPAVAL_HOME}/skills/product-discovery/assets/hmw-skeleton.md` / `ears-spec-skeleton.md` and dispatches one general-purpose subagent per substep that reads `${ERPAVAL_HOME}/skills/product-discovery/references/roles/hmw-framer.md` (or `ears-specifier.md`) as its role prompt. Dispatch via in-chat NL: `> Use a general-purpose agent to frame this as HMW per the role prompt at …; final step: call the built-in`summary`tool with the framing.`
 
 - **HMW** (fuzzy problems) — customer-problem template, 3 of 9 d.school strategies, NN/g-validated HMW statements.
 - **EARS** (unclear contracts) — 5 templates (Ubiquitous, Event-driven, State-driven, Optional feature, Unwanted behavior). Each AC carries `[P]` (parallel-safe) or `Dependencies: AC-X-Y`. Plan derives tasks directly.
@@ -128,14 +128,14 @@ Skip both when the ask names a specific user segment, an observable outcome with
 
 ## Phase summary
 
-| Phase        | Purpose                                 | Execution method                                                              | Parallelizable with  |
-| ------------ | --------------------------------------- | ----------------------------------------------------------------------------- | -------------------- |
-| **Explore**  | Build mental model of the codebase      | Parallel NL subagent dispatches (`erpaval-explorer` — split by module, single turn) | Research             |
+| Phase        | Purpose                                 | Execution method                                                                      | Parallelizable with  |
+| ------------ | --------------------------------------- | ------------------------------------------------------------------------------------- | -------------------- |
+| **Explore**  | Build mental model of the codebase      | Parallel NL subagent dispatches (`erpaval-explorer` — split by module, single turn)   | Research             |
 | **Research** | Fetch live API docs, versions, patterns | Parallel NL subagent dispatches (`erpaval-researcher` — split by domain, single turn) | Explore              |
-| **Plan**     | Derive tasks from EARS spec + deps      | Orchestrator + filesystem packet seeding (with `/todo` mirror)                | None (needs E+R)     |
-| **Act**      | Implement via parallel subagents        | One turn per wave, NL dispatch per task (Kiro caps at 4 concurrent)           | Per dependency graph |
-| **Validate** | Verify correctness, quality, security   | NL subagent dispatch (Opus) + static tools                                    | Partially            |
-| **Compound** | Extract lessons from session            | Orchestrator + `compound.md` procedure                                        | None (post-merge)    |
+| **Plan**     | Derive tasks from EARS spec + deps      | Orchestrator + filesystem packet seeding (with `/todo` mirror)                        | None (needs E+R)     |
+| **Act**      | Implement via parallel subagents        | One turn per wave, NL dispatch per task (Kiro caps at 4 concurrent)                   | Per dependency graph |
+| **Validate** | Verify correctness, quality, security   | NL subagent dispatch (Opus) + static tools                                            | Partially            |
+| **Compound** | Extract lessons from session            | Orchestrator + `compound.md` procedure                                                | None (post-merge)    |
 
 > Research agents start with `date +"%Y-%m-%d"` (always) and `context7` (for library/API/SDK lookups).
 > Default recency window is the last 6 months — agentic-AI libraries change monthly.
@@ -215,23 +215,23 @@ Compound can also run ad-hoc when the user wants to force-extract lessons mid-se
 
 ### Phase-level agent mapping
 
-| Phase    | Agent used                                                                              |
-| -------- | --------------------------------------------------------------------------------------- |
-| Explore  | Bundled `erpaval-explorer` agent at `kiro/agents/erpaval-explorer.json`                  |
-| Research | Bundled `erpaval-researcher` agent at `kiro/agents/erpaval-researcher.json`             |
-| Act      | General-purpose subagents via NL dispatch (model is set in the subagent's agent JSON, not at invocation time)  |
-| Validate | Opus subagents for code quality and security review                                     |
-| Compound | Orchestrator + `compound.md` procedure (invokes opus for CL-LESSONS)                    |
+| Phase    | Agent used                                                                                                    |
+| -------- | ------------------------------------------------------------------------------------------------------------- |
+| Explore  | Bundled `erpaval-explorer` agent at `kiro/agents/erpaval-explorer.json`                                       |
+| Research | Bundled `erpaval-researcher` agent at `kiro/agents/erpaval-researcher.json`                                   |
+| Act      | General-purpose subagents via NL dispatch (model is set in the subagent's agent JSON, not at invocation time) |
+| Validate | Opus subagents for code quality and security review                                                           |
+| Compound | Orchestrator + `compound.md` procedure (invokes opus for CL-LESSONS)                                          |
 
 ## Tools and hooks
 
 Hooks are configured **inline** in the `hooks` field of `kiro/agents/erpaval-orchestrator.json` — Kiro has no plugin-global `hooks.json`. All three hooks are UV-shebang Python scripts built on a Kiro-shaped fork of `framework.py`. Every hook is fail-open via `framework.run_hook` — any uncaught exception logs to stderr and exits 0, so a broken hook cannot wedge a session.
 
-| Hook                              | Kiro event                       | Role                                                                                                                                                                                                                                                       |
-| --------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `kiro_session_start_bootstrap.py` | `agentSpawn`                     | Emit `.erpaval/solutions/` category counts to STDOUT (Kiro folds STDOUT into conversation context). Fires once per session and only when a `sessions/session-<hex>/` dir was modified in the last 24h — cold repos stay silent.                            |
-| `kiro_validate_packet.py`         | `postToolUse` (matcher=`fs_write`) | Pydantic schema-check writes under `.erpaval/`. Early-exits on non-erpaval paths. Also drops `/tmp/kiro-erpaval-active-<session_id>` as a cross-hook "this Kiro session touched ERPAVal" marker.                                                            |
-| `kiro_compound_nudge.py`          | `stop`                           | One-shot **advisory** STDERR warning when Compound is pending. Six gates: erpaval-active marker, `session-<hex>` name, fresh `validation.yaml` (<2h), no `lessons.yaml`, not nudged this session (HookState), not in `.erpaval/sessions/.nudged` ledger. The warning is informational — Kiro cannot block on `stop`. |
+| Hook                              | Kiro event                         | Role                                                                                                                                                                                                                                                                                                                 |
+| --------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kiro_session_start_bootstrap.py` | `agentSpawn`                       | Emit `.erpaval/solutions/` category counts to STDOUT (Kiro folds STDOUT into conversation context). Fires once per session and only when a `sessions/session-<hex>/` dir was modified in the last 24h — cold repos stay silent.                                                                                      |
+| `kiro_validate_packet.py`         | `postToolUse` (matcher=`fs_write`) | Pydantic schema-check writes under `.erpaval/`. Early-exits on non-erpaval paths. Also drops `/tmp/kiro-erpaval-active-<session_id>` as a cross-hook "this Kiro session touched ERPAVal" marker.                                                                                                                     |
+| `kiro_compound_nudge.py`          | `stop`                             | One-shot **advisory** STDERR warning when Compound is pending. Six gates: erpaval-active marker, `session-<hex>` name, fresh `validation.yaml` (<2h), no `lessons.yaml`, not nudged this session (HookState), not in `.erpaval/sessions/.nudged` ledger. The warning is informational — Kiro cannot block on `stop`. |
 
 Imperative tools under `scripts/` — PEP 723 scripts invoked via `uv run` by the orchestrator:
 
@@ -245,17 +245,17 @@ Imperative tools under `scripts/` — PEP 723 scripts invoked via `uv run` by th
 
 This skill is the Kiro distribution of erpaval. The Claude Code distribution lives at the repo root (`skills/erpaval/`); this distribution lives at `kiro/skills/erpaval/`. The methodology (six phases, classifiers, gates, cycles, write protocol, EARS, HMW) is identical across both. The differences below are runtime-shape only.
 
-| Concern              | Claude Code distribution                            | Kiro distribution                                                                                          |
-| -------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Plugin root env var  | `${CLAUDE_PLUGIN_ROOT}` (Claude Code injects)       | `${ERPAVAL_HOME}` (set by `kiro/install.sh`; defaults to `~/.kiro/erpaval`)                                |
-| Skill subfolders     | `skills/erpaval/{references,templates,tools}/`      | `kiro/skills/erpaval/{references,assets,scripts}/` (Agent Skills spec naming)                              |
-| Subagent invocation  | `Task(subagent_type=…, prompt=…, run_in_background=true, isolation="worktree")` | In-chat NL: `> Use the erpaval-explorer agent to …`. Fires Kiro's `subagent` built-in. Returns via the auto-attached `summary` tool — every dispatch prompt must end with `Final step: call the built-in `summary` tool …`. `/spawn` is **not** the orchestrator's primitive; it's a user-driven command for fresh sessions. |
-| Concurrency cap      | No documented cap                                   | **Max 4 parallel** subagents (Kiro hard limit) — large waves dispatch in batches of 4                       |
-| Task primitive       | `TaskCreate` / `TaskUpdate` / `TaskList` / `addBlockedBy` | Filesystem-driven (`tasks/T-AC-X-Y.md` `status:` frontmatter) authoritative; Kiro `/todo` mirrors UI         |
-| Hook config location | `hooks/hooks.json` at plugin root (plugin-global)   | Inline `hooks` field in `kiro/agents/erpaval-orchestrator.json` (per-agent)                                |
-| Hook event names     | `SessionStart`, `PostToolUse(Write\|Edit\|MultiEdit)`, `Stop` | `agentSpawn`, `postToolUse(matcher=fs_write)`, `stop`                                                      |
-| Stop hook semantics  | Can re-prompt the model via `decision: "block"` + reason | **Advisory only** — STDERR warning, non-blocking. User runs `/erpaval` to invoke Compound when warned.     |
-| Worktree isolation   | `isolation: "worktree"` per Agent call              | **No Kiro primitive.** Subagents run in the same working tree; rely on `Scope` discipline in packets.       |
-| Plugin namespacing   | `plugin:skill` syntax                               | Flat — skills live as sibling dirs under `~/.kiro/skills/` or `<project>/.kiro/skills/`                    |
+| Concern              | Claude Code distribution                                                        | Kiro distribution                                                                                                                                                                                                                                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Plugin root env var  | `${CLAUDE_PLUGIN_ROOT}` (Claude Code injects)                                   | `${ERPAVAL_HOME}` (set by `kiro/install.sh`; defaults to `~/.kiro/erpaval`)                                                                                                                                                                                                                                                |
+| Skill subfolders     | `skills/erpaval/{references,templates,tools}/`                                  | `kiro/skills/erpaval/{references,assets,scripts}/` (Agent Skills spec naming)                                                                                                                                                                                                                                              |
+| Subagent invocation  | `Task(subagent_type=…, prompt=…, run_in_background=true, isolation="worktree")` | In-chat NL: `> Use the erpaval-explorer agent to …`. Fires Kiro's `subagent` built-in. Returns via the auto-attached `summary` tool — every dispatch prompt must end with `Final step: call the built-in`summary`tool …`. `/spawn` is **not** the orchestrator's primitive; it's a user-driven command for fresh sessions. |
+| Concurrency cap      | No documented cap                                                               | **Max 4 parallel** subagents (Kiro hard limit) — large waves dispatch in batches of 4                                                                                                                                                                                                                                      |
+| Task primitive       | `TaskCreate` / `TaskUpdate` / `TaskList` / `addBlockedBy`                       | Filesystem-driven (`tasks/T-AC-X-Y.md` `status:` frontmatter) authoritative; Kiro `/todo` mirrors UI                                                                                                                                                                                                                       |
+| Hook config location | `hooks/hooks.json` at plugin root (plugin-global)                               | Inline `hooks` field in `kiro/agents/erpaval-orchestrator.json` (per-agent)                                                                                                                                                                                                                                                |
+| Hook event names     | `SessionStart`, `PostToolUse(Write\|Edit\|MultiEdit)`, `Stop`                   | `agentSpawn`, `postToolUse(matcher=fs_write)`, `stop`                                                                                                                                                                                                                                                                      |
+| Stop hook semantics  | Can re-prompt the model via `decision: "block"` + reason                        | **Advisory only** — STDERR warning, non-blocking. User runs `/erpaval` to invoke Compound when warned.                                                                                                                                                                                                                     |
+| Worktree isolation   | `isolation: "worktree"` per Agent call                                          | **No Kiro primitive.** Subagents run in the same working tree; rely on `Scope` discipline in packets.                                                                                                                                                                                                                      |
+| Plugin namespacing   | `plugin:skill` syntax                                                           | Flat — skills live as sibling dirs under `~/.kiro/skills/` or `<project>/.kiro/skills/`                                                                                                                                                                                                                                    |
 
 The PEP 723 scripts (`erpaval-new.py`, `erpaval-recall.py`, `erpaval-validate.py`) are runtime-agnostic — identical bytes in both distributions. The methodology references (`flow.md`, `classifiers.md`, `compound.md`, `validation-playbook.md`, `write-protocol.md`, `context-packets.md`) are also runtime-agnostic with light env-var/path rewrites only.

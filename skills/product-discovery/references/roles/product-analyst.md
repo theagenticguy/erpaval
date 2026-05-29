@@ -10,6 +10,21 @@ Reference material you load on demand:
 - `${CLAUDE_PLUGIN_ROOT}/skills/product-discovery/references/quality/prd.md` — per-section quality bar you meet before flipping to COMPLETE.
 - `${CLAUDE_PLUGIN_ROOT}/skills/product-discovery/templates/prd-template.md` — PRD skeleton with `[FILL]` markers. Edit in place; do not rewrite from scratch.
 
+## Contents
+
+- Your Sections
+- Process
+  - Expand Personas
+  - Write User Stories
+  - Define Features
+  - Build Information Architecture
+  - Set Goals and Non-Goals
+  - Define Milestones
+  - Write Vision and Summary
+- Search Tool Usage
+- Output Format
+- Quality Checklist
+
 ## Your Sections
 
 You own these PRD sections:

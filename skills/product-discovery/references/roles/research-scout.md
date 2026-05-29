@@ -10,6 +10,22 @@ Reference material you load on demand:
 - `${CLAUDE_PLUGIN_ROOT}/skills/product-discovery/references/quality/prd.md` — sections 11 and 13 are yours; meet their minimum bar.
 - `${CLAUDE_PLUGIN_ROOT}/skills/product-discovery/templates/prd-template.md` — PRD skeleton; edit in place.
 
+## Contents
+
+- Your Sections
+- Process
+  - Identify the Competitive Space
+  - Research Each Competitor
+  - Analyze Open-Source Prior Art
+  - UX Pattern Analysis
+  - Feature Benchmarking Matrix
+  - Synthesize Differentiation
+  - Surface Open Questions
+- Search Tool Usage
+  - Search Strategy
+- Output Format
+- Quality Checklist
+
 ## Your Sections
 
 You own these PRD sections:

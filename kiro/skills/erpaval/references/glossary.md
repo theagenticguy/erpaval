@@ -53,11 +53,11 @@ Runtime prompts the orchestrator agent runs to decide which phases to execute. F
 
 ## Gates
 
-| Gate       | Condition                                                                              | Enforcement                  |
-| ---------- | -------------------------------------------------------------------------------------- | ---------------------------- |
-| **Gate 0** | Both Explore and Research packets show `status: COMPLETE` in their frontmatter         | Plan blocks until satisfied  |
-| **Gate 1** | Plan reviewed and approved by the user                                                 | Act blocks until satisfied   |
-| **Gate 2** | All three validation layers green or findings dispositioned                            | Merge blocks until satisfied |
+| Gate       | Condition                                                                      | Enforcement                  |
+| ---------- | ------------------------------------------------------------------------------ | ---------------------------- |
+| **Gate 0** | Both Explore and Research packets show `status: COMPLETE` in their frontmatter | Plan blocks until satisfied  |
+| **Gate 1** | Plan reviewed and approved by the user                                         | Act blocks until satisfied   |
+| **Gate 2** | All three validation layers green or findings dispositioned                    | Merge blocks until satisfied |
 
 ## Cycles (`C*`)
 
