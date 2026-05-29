@@ -99,12 +99,12 @@ When launched by a skill orchestrator (`/deep-research`, `/build-stack`, `/draft
 
 ## Tool Priority by Research Type
 
-| Research Type      | Priority Order                                  |
-| ------------------ | ----------------------------------------------- |
-| General topic      | exa → brave → WebFetch                          |
-| Code / library     | context7 → deepwiki → exa → brave               |
-| AWS service or SDK | awsknowledge → context7 → deepwiki → WebFetch   |
-| Market / product   | brave → exa → WebFetch                          |
+| Research Type      | Priority Order                                |
+| ------------------ | --------------------------------------------- |
+| General topic      | exa → brave → WebFetch                        |
+| Code / library     | context7 → deepwiki → exa → brave             |
+| AWS service or SDK | awsknowledge → context7 → deepwiki → WebFetch |
+| Market / product   | brave → exa → WebFetch                        |
 
 **For library, API, or SDK lookups: always start with `context7`.** Resolve the library ID first (`mcp__plugin_erpaval_context7__resolve-library-id`), then fetch docs (`mcp__plugin_erpaval_context7__query-docs`). Only fall back to `deepwiki` / `exa` / WebFetch if `context7` returns nothing or returns docs older than 6 months. Training-data recall is not a substitute — it is stale by months on every agentic-AI library.
 

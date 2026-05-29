@@ -6,6 +6,24 @@ The pattern is borrowed from EveryInc, Lavra, dspy-compounding, iliaal, and tajm
 
 ---
 
+## Contents
+
+- Dual-track schema
+- Canonical file layout
+  - Slug rules
+  - Why no dates
+- Bug-track frontmatter
+- Knowledge-track frontmatter
+- CL-LESSONS — novelty + reusability filter
+- Compound — operating sequence
+  - Scope boundaries
+- Discoverability — INDEX.md + CLAUDE.md pointer
+- Recall — how lessons feed the next session
+  - Retrieval scoring
+  - Invocation
+  - Scope
+- Citations
+
 ## Dual-track schema
 
 Two tracks — `bug` for encountered-and-resolved failures, `knowledge` for non-obvious patterns worth preserving. The full category list with descriptions lives in `references/solution-categories.yaml` — single source of truth, read by `erpaval-new.py` at scaffold time.

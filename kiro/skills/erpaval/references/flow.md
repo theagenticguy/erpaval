@@ -147,16 +147,16 @@ Cycles are the adaptive core. They let the flow recover from premature
 planning, missing context, or bad implementations without restarting. Each
 has a bounded re-entry point and a persistence contract.
 
-| ID | Name | Trigger | Re-entry point |
-| --- | --- | --- | --- |
-| `C1` | Plan revision | Gate 1 rejection. User amends scope or architecture. | Plan. Each revision diffs `CP-PLAN`. History kept. Expect 2-4 iterations. |
-| `C1b` | Deeper context | Gate 1 reveals Explore missed a critical area. | Explore with a scoped prompt. Only the gap is re-explored. |
-| `C1c` | Reframe problem | Gate 1 reveals the problem itself was wrong. | HMW framing. Rare but valuable. EARS spec gets regenerated. |
-| `C2` | In-task fix | Lint, type, or unit-test fail inside a subagent. | Same subagent via `SendMessage`. Cap 3 attempts. Orchestrator escalates on attempt 4. |
-| `C3` | Missing prereq replan | Subagent reports a missing dependency. | Plan. Insert missing task, re-wire `addBlockedBy`, resume Act where safe. |
-| `C4` | Validation fail | Any of 3 validation layers returns red. | Act. Re-open failing tasks with scoped fix packets. Validate re-runs. |
-| `C5` | Human fix disposition | Gate 2 finding accepted by reviewer as "must fix". | Act. Same as C4 with human-authored fix instructions. |
-| `C6` | Wave progression | Current Act wave complete, more waves in plan. | Act. Self-loop with eager unblocking. Launch next-wave tasks as their blockers clear. |
+| ID    | Name                  | Trigger                                              | Re-entry point                                                                        |
+| ----- | --------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `C1`  | Plan revision         | Gate 1 rejection. User amends scope or architecture. | Plan. Each revision diffs `CP-PLAN`. History kept. Expect 2-4 iterations.             |
+| `C1b` | Deeper context        | Gate 1 reveals Explore missed a critical area.       | Explore with a scoped prompt. Only the gap is re-explored.                            |
+| `C1c` | Reframe problem       | Gate 1 reveals the problem itself was wrong.         | HMW framing. Rare but valuable. EARS spec gets regenerated.                           |
+| `C2`  | In-task fix           | Lint, type, or unit-test fail inside a subagent.     | Same subagent via `SendMessage`. Cap 3 attempts. Orchestrator escalates on attempt 4. |
+| `C3`  | Missing prereq replan | Subagent reports a missing dependency.               | Plan. Insert missing task, re-wire `addBlockedBy`, resume Act where safe.             |
+| `C4`  | Validation fail       | Any of 3 validation layers returns red.              | Act. Re-open failing tasks with scoped fix packets. Validate re-runs.                 |
+| `C5`  | Human fix disposition | Gate 2 finding accepted by reviewer as "must fix".   | Act. Same as C4 with human-authored fix instructions.                                 |
+| `C6`  | Wave progression      | Current Act wave complete, more waves in plan.       | Act. Self-loop with eager unblocking. Launch next-wave tasks as their blockers clear. |
 
 ## Cycle protocols
 

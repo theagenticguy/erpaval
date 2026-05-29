@@ -11,6 +11,18 @@ Conventions:
 
 ---
 
+## Contents
+
+- §A — Intake & triage
+- §B — Build loop
+- §C — Validate · merge · compound
+- Named cycles
+  - Disambiguating C1 / C1b / C1c
+  - C2 protocol
+  - C3 protocol
+  - C4 / C5 protocol
+  - C6 — eager unblocking
+
 ## §A — Intake & triage
 
 Session start through "ready to build". Every branch either routes to another skill, exits, or hands off to §B.
@@ -101,6 +113,13 @@ flowchart LR
   WAVE_CHECK -->|all done| HANDOFF_C([to §C])
 ```
 
+`PH_EXPLORE`, `PH_RESEARCH`, and `PH_ACT` are **fan-out phases**. Each launches
+many parallel subagents in one message, not one agent. Explore fans out by
+perspective, Research by library or domain, Act by wave task. Research also
+carries the grounding mandate: no library or version claim leaves Research
+un-grounded. See `fan-out.md` for counts and `orchestrator.md` § Research for the
+grounding rule.
+
 ## §C — Validate · merge · compound
 
 Three validation layers run in sequence. Gate 2 auto-merges if clean; otherwise human dispositions findings. After merge, Compound extracts lessons from the session trace — this is what makes N+1 smarter than N.
@@ -133,6 +152,11 @@ flowchart LR
   CP_LESSONS --> CP_SESSION[(CP-SESSION)]
   CP_SESSION --> DONE([Done])
 ```
+
+`PH_VALIDATE` fans out too. The quality and security layers each split into
+parallel dimension reviewers, launched in one message. Per-finding adversarial
+verification then runs before Gate 2. See `fan-out.md` and
+`validation-playbook.md`.
 
 ---
 

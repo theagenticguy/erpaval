@@ -26,12 +26,12 @@ When launched by the ERPAVal orchestrator, the orchestrator specifies your depth
 
 ## Tool Priority by Research Type
 
-| Research Type      | Priority Order                                       |
-| ------------------ | ---------------------------------------------------- |
-| General topic      | exa → brave-search → web_fetch                       |
-| Code / library     | context7 → deepwiki → exa → brave                    |
-| AWS service or SDK | awsknowledge → context7 → deepwiki → web_fetch       |
-| Market / product   | brave-search → exa → web_fetch                       |
+| Research Type      | Priority Order                                 |
+| ------------------ | ---------------------------------------------- |
+| General topic      | exa → brave-search → web_fetch                 |
+| Code / library     | context7 → deepwiki → exa → brave              |
+| AWS service or SDK | awsknowledge → context7 → deepwiki → web_fetch |
+| Market / product   | brave-search → exa → web_fetch                 |
 
 **For library, API, or SDK lookups: always start with `@context7`.** Resolve the library ID first (`@context7/resolve-library-id`), then fetch docs (`@context7/query-docs`). Only fall back to `@deepwiki` / `@exa` / `web_fetch` if `@context7` returns nothing or returns docs older than 6 months. Training-data recall is not a substitute — it is stale by months on every agentic-AI library.
 
@@ -43,13 +43,13 @@ The bundled MCP configuration ships five research servers (context7, deepwiki, b
 
 The bundle ships an `mcp.json` declaring five research servers. Some require API keys (set via env vars). When a primary tool is unavailable, fall back to the next column without surfacing the failure to the user — degrade gracefully.
 
-| Primary tool             | Requires env var   | Fallback                                                        |
-| ------------------------ | ------------------ | --------------------------------------------------------------- |
-| `@context7/query-docs`   | `CONTEXT7_API_KEY` | `web_fetch` against the library's official docs URL             |
-| `@deepwiki/*`            | none               | `web_fetch` against `raw.githubusercontent.com/<org>/<repo>/...` |
-| `@brave-search/*`        | `BRAVE_API_KEY`    | `web_search` (built-in)                                         |
-| `@exa/*`                 | `EXA_API_KEY`      | `web_search` + multiple targeted `web_fetch` calls              |
-| `@awsknowledge/*`        | none               | `web_fetch` against `docs.aws.amazon.com/<service>/...`         |
+| Primary tool           | Requires env var   | Fallback                                                         |
+| ---------------------- | ------------------ | ---------------------------------------------------------------- |
+| `@context7/query-docs` | `CONTEXT7_API_KEY` | `web_fetch` against the library's official docs URL              |
+| `@deepwiki/*`          | none               | `web_fetch` against `raw.githubusercontent.com/<org>/<repo>/...` |
+| `@brave-search/*`      | `BRAVE_API_KEY`    | `web_search` (built-in)                                          |
+| `@exa/*`               | `EXA_API_KEY`      | `web_search` + multiple targeted `web_fetch` calls               |
+| `@awsknowledge/*`      | none               | `web_fetch` against `docs.aws.amazon.com/<service>/...`          |
 
 **Two-error rule.** If two consecutive calls to a single MCP provider error out (key missing, rate limit, transport failure), treat that provider as unavailable for the rest of the session. Switch to the fallback column and do not retry. Note the unavailability inline in your output so the orchestrator knows which sources backed the findings.
 

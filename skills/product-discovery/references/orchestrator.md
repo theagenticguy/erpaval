@@ -10,6 +10,31 @@ Terms:
 
 ---
 
+## Contents
+
+- Inputs
+- Phase tracking
+- Phase 0 — Route
+- Phase 1 — Frame
+  - PRD route — abbreviated framing
+  - Discovery-round / HMW-only / EARS-only / JTBD-only routes — full framing
+- Phase 2 — Parallel execution
+  - PRD route — three parallel roles
+  - Discovery-round route — 2-3 parallel roles
+  - HMW-only route — one agent
+  - EARS-only route — one agent
+  - JTBD-only route — one agent
+  - Monitor (all routes with parallel agents)
+  - Stuck detection
+- Phase 3 — Synthesize
+  - PRD route — `prd-synthesizer`
+  - Discovery-round route — `discovery-lead` (return)
+  - HMW-only / EARS-only / JTBD-only — no synthesis
+- Phase 3.5 — Critic review
+- Phase 4 — Deliver
+- Ecosystem integration — erpaval hard-dep
+- Inline mode (no subagents)
+
 ## Inputs
 
 - The user's brief, parsed from `$ARGUMENTS`.
@@ -107,6 +132,8 @@ Run foreground. Proceed to Phase 2 when the agent flips framing.md to COMPLETE.
 ## Phase 2 — Parallel execution
 
 Fan-out depends on the route. In every case, launch parallel `Agent` calls in a **single message** — one `Agent` per role — with `run_in_background: true` and `subagent_type: "general-purpose"`, `model: "opus"`.
+
+**Spawn the roles as parallel subagents via the `Agent` tool — this is the load-bearing step. Current Claude models under-delegate by default and will tend to do all three roles' research sequentially in the main thread unless the fan-out is explicit. For any route with 2+ roles (PRD: three roles; discovery-round: 2-3 roles), issue every `Agent` call in one message with `run_in_background: true`. Do not run the roles one after another inline, and do not collapse them into a single agent.** Single-agent routes (HMW-only, EARS-only, JTBD-only) are the only exception.
 
 Seed each agent's output file from the matching template before launching — no agent faces a blank file. Each agent also gets a work log seeded from `templates/worklog-skeleton.md` with role filled in.
 

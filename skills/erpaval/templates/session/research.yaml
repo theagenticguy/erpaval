@@ -3,7 +3,10 @@ domain: <e.g., OAuth + PKCE libraries>
 libraries:
   - name: <package name>
     version_pin: "^<major>.<minor>"
-    docs_source: context7    # context7 | deepwiki | web
+    grounded: true                      # true once version + api_surface are cited
+    retrieved_via: context7             # context7 | deepwiki | exa | brave | nova | web
+    sources:                            # ≥1 current-docs URL — required when grounded: true
+      - <url to the version/API source>
     api_surface:
       - <namespaced API path>
     breaking_changes: <summary of relevant changes>

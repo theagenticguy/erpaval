@@ -2,6 +2,17 @@
 
 Behavior-Driven Development scenario format. Dan North, ~2006. Executable by Cucumber, SpecFlow, Behave. The native language of modern BDD test suites.
 
+## Contents
+
+- Canonical structure
+- Better Gherkin guidelines (Cucumber)
+- When to use
+- When to skip
+- Template / worked example
+- Validation checks
+- EARS vs. Gherkin — when to use which
+- Citations
+
 ## Canonical structure
 
 ```gherkin

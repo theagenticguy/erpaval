@@ -4,6 +4,18 @@ Use these tables to derive product requirements from a user's short prompt. The 
 
 ---
 
+## Contents
+
+- App Type Detection
+- Feature Inference from Keywords
+- Persona Inference
+- Scale Inference
+- Deployment Inference
+- Auth Inference
+- Data Persistence Inference
+- Complexity Inference
+- Using These Tables
+
 ## App Type Detection
 
 | Signal in Prompt                            | Inferred App Type         | Confidence |

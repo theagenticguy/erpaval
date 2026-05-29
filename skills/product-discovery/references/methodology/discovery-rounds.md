@@ -6,6 +6,16 @@ The shape maps cleanly onto Double Diamond: Phase 1-2 are Discover (problem-spac
 
 ---
 
+## Contents
+
+- Phase 1 — Pain Point Excavation
+- Phase 2 — Landscape Research (Three Vectors)
+- Phase 3 — Multi-Direction Brainstorm
+- Phase 4 — Vocabulary Mapping
+- Phase 5 — Data Model Synthesis
+- Phase 6 — Delivery and Persistence
+- Conversation discipline
+
 ## Phase 1 — Pain Point Excavation
 
 Start with the user's stated friction, not the solution. Ask clarifying questions to find the root cause before generating options.

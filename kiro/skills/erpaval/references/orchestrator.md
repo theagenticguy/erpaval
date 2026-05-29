@@ -4,7 +4,7 @@ How the orchestrator (a Kiro CLI session running the `erpaval-orchestrator` agen
 
 > **Dispatch contract — NL is the orchestrator's primitive, `/spawn` is the user's.** The canonical way the orchestrator delegates is in-chat natural language: `> Use the erpaval-explorer agent to <task>`. That fires the `subagent` built-in tool, which is bounded to the parent's task graph, capped at 4 concurrent, and returns via the **built-in `summary` tool**. `/spawn` is a *user-driven* command that starts a fresh long-running session for the human to revisit via `/chat resume` or Ctrl+G — it is **not** the orchestrator's delegation channel. Don't confuse them. Per `kiro.dev/docs/cli/chat/subagents/`: *"`/spawn` is a user-driven command that starts a fresh long-running session you can return to later."*
 
-> **Return contract — every subagent must call `summary` as its final act.** Kiro subagents have exactly one return path: the auto-attached built-in `summary` tool. Writing output to a packet on disk is necessary but **not sufficient** — without a `summary` call the parent receives nothing and the dispatch reads as "No result". Every spawn prompt must end with: `Final step: call the built-in `summary` tool with a 1-2 paragraph result; return nothing else.`
+> **Return contract — every subagent must call `summary` as its final act.** Kiro subagents have exactly one return path: the auto-attached built-in `summary` tool. Writing output to a packet on disk is necessary but **not sufficient** — without a `summary` call the parent receives nothing and the dispatch reads as "No result". Every spawn prompt must end with: `Final step: call the built-in`summary`tool with a 1-2 paragraph result; return nothing else.`
 
 Terms like `CP-*`, `CL-*`, `T-AC-X-Y`, Wave are defined in `glossary.md`. The graph is in `flow.md`.
 
@@ -46,11 +46,11 @@ On 1-file fixes, `CL-COMPLEXITY` exits before this step — recall-only is corre
 
 ## Phase gates
 
-| Gate       | Condition                                                                                          | Enforcement                  |
-| ---------- | -------------------------------------------------------------------------------------------------- | ---------------------------- |
-| **Gate 0** | Both Explore and Research packets show `status: COMPLETE`                                          | Plan blocks until satisfied  |
-| **Gate 1** | Plan reviewed and approved by the user                                                             | Act blocks until satisfied   |
-| **Gate 2** | All three validation layers green or findings dispositioned                                        | Merge blocks until satisfied |
+| Gate       | Condition                                                   | Enforcement                  |
+| ---------- | ----------------------------------------------------------- | ---------------------------- |
+| **Gate 0** | Both Explore and Research packets show `status: COMPLETE`   | Plan blocks until satisfied  |
+| **Gate 1** | Plan reviewed and approved by the user                      | Act blocks until satisfied   |
+| **Gate 2** | All three validation layers green or findings dispositioned | Merge blocks until satisfied |
 
 Before advancing, always `grep -l "^status: COMPLETE" .erpaval/sessions/<id>/tasks/*.md` and verify every task in the current phase is `COMPLETE`. If any task is `IN_PROGRESS` or `BLOCKED`, wait. The orchestrator gates each wave by reading every blocker packet's `status:` frontmatter — a task in wave N+1 will not be `/spawn`-ed until every wave-N blocker is `COMPLETE`.
 
@@ -261,15 +261,15 @@ See `validation-playbook.md` for layer-by-layer prompts and severity rubrics.
 
 This table maps the Claude Code `Agent` tool parameters to Kiro's NL subagent-dispatch semantics, for porting prompts and runbooks.
 
-| Claude Code `Agent` param | Kiro equivalent                                                                                          |
-| ------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `description`             | A short, kebab-case task label embedded in the NL prompt (e.g. `the T-AC-1-1 Act subagent`). Use it consistently across the prompt and packet so `kiro-cli chat --list-sessions` is searchable. |
-| `prompt`                  | The free-text NL dispatch: `> Use the <agent-name> agent to <task>...`. Always end with the `summary`-as-final-step instruction. |
-| `subagent_type`           | The custom-agent name in the NL phrasing: `Use the erpaval-explorer agent to …` / `Use the erpaval-researcher agent to …` / `Use a general-purpose agent to …` (default for Act) |
+| Claude Code `Agent` param | Kiro equivalent                                                                                                                                                                                     |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `description`             | A short, kebab-case task label embedded in the NL prompt (e.g. `the T-AC-1-1 Act subagent`). Use it consistently across the prompt and packet so `kiro-cli chat --list-sessions` is searchable.     |
+| `prompt`                  | The free-text NL dispatch: `> Use the <agent-name> agent to <task>...`. Always end with the `summary`-as-final-step instruction.                                                                    |
+| `subagent_type`           | The custom-agent name in the NL phrasing: `Use the erpaval-explorer agent to …` / `Use the erpaval-researcher agent to …` / `Use a general-purpose agent to …` (default for Act)                    |
 | `model`                   | Set in the subagent's agent JSON `model` field, **not** at invocation time. To vary per task, define multiple agents (e.g. `erpaval-act-haiku`, `erpaval-act-sonnet`) and route via the NL phrasing |
-| `run_in_background`       | All NL subagent dispatches are async by default; the orchestrator monitors via Ctrl+G crew monitor (live state) and packet `wc -l` (filesystem snapshot) |
-| `isolation`               | **Not supported.** Kiro has no worktree primitive. Subagents share the working tree — rely on `Scope` discipline in packets instead |
-| `name`                    | Set via the in-prompt task label (above). Subagent sessions persist with the parent session ID; recover any one with `kiro-cli chat --resume-id <subagent-session-id>` |
+| `run_in_background`       | All NL subagent dispatches are async by default; the orchestrator monitors via Ctrl+G crew monitor (live state) and packet `wc -l` (filesystem snapshot)                                            |
+| `isolation`               | **Not supported.** Kiro has no worktree primitive. Subagents share the working tree — rely on `Scope` discipline in packets instead                                                                 |
+| `name`                    | Set via the in-prompt task label (above). Subagent sessions persist with the parent session ID; recover any one with `kiro-cli chat --resume-id <subagent-session-id>`                              |
 
 > **`/spawn` is for users, not the orchestrator.** `/spawn --name X "..."` starts a fresh long-running session for the *human* to switch into via `/chat resume` or Ctrl+G. It is not the agent's delegation primitive. Do not put `/spawn` lines in orchestrator prompts. If you see them in older runbooks, treat them as bugs to translate into NL dispatch.
 
@@ -300,7 +300,7 @@ The orchestrator's agent JSON must declare:
   "toolsSettings": {
     "subagent": {
       "availableAgents": ["erpaval-explorer", "erpaval-researcher", "erpaval-act-*"],
-      "trustedAgents":   ["erpaval-explorer", "erpaval-researcher", "erpaval-act-*"]
+      "trustedAgents": ["erpaval-explorer", "erpaval-researcher", "erpaval-act-*"]
     }
   }
 }

@@ -10,6 +10,18 @@ Reference material you load on demand:
 - `${CLAUDE_PLUGIN_ROOT}/skills/product-discovery/references/quality/prd.md` — per-section quality bar.
 - `${CLAUDE_PLUGIN_ROOT}/skills/product-discovery/templates/prd-template.md` — PRD skeleton; edit in place.
 
+## Contents
+
+- Your Sections
+- Process
+  - Define Non-Functional Requirements
+  - Design Data Models
+  - Design API Contracts
+  - Identify Edge Cases
+- Search Tool Usage
+- Output Format
+- Quality Checklist
+
 ## Your Sections
 
 You own these PRD sections:

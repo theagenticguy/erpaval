@@ -30,31 +30,31 @@ compatibility: Designed for Kiro CLI on the open Agent Skills standard. Skills a
 
 ## Contents
 
-| Reference | When to load |
-| --- | --- |
-| `references/orchestrator.md` | Running the pipeline. Five routes, parallel Phase 2, critic review, deliver. |
-| `references/write-protocol.md` | Canonical write-protocol block. Copied into every subagent prompt. |
-| `references/frameworks/INDEX.md` | Routing guide. Discovery and spec decision tables. Composition rules. |
-| `references/frameworks/*.md` | Per-framework files. One per framework. |
-| `references/methodology/discovery-rounds.md` | Six-phase discovery methodology. |
-| `references/inference-heuristics.md` | Signal-to-inference tables for the PRD-route Intent Profile. |
-| `references/quality/prd.md` | Per-section PRD quality bar. Cross-section consistency checks. |
-| `references/roles/product-analyst.md` | PRD route. Vision, personas, user stories, IA, milestones. |
-| `references/roles/system-architect.md` | PRD route. NFRs, data models, API contracts, edge cases. |
-| `references/roles/research-scout.md` | PRD route. Market context and open questions. |
-| `references/roles/discovery-lead.md` | Discovery-round route. Problem framing and Double Diamond cadence. |
-| `references/roles/hmw-framer.md` | HMW-only route. Also the hard-dep entry point for erpaval CL-RIGOR fuzzy. |
-| `references/roles/jtbd-interviewer.md` | JTBD-only route. Job stories from PM-provided source material. |
-| `references/roles/ears-specifier.md` | EARS-only route. Also the hard-dep entry point for erpaval CL-RIGOR contract-unclear. |
-| `references/roles/prd-synthesizer.md` | PRD route Phase 3. Composes the final PRD from three parallel work logs. |
-| `references/roles/discovery-critic.md` | Phase 3.5 critic. Rubric-graded review of any synthesized artifact. |
-| `assets/prd-template.md` | 15-section PRD skeleton with `[FILL]` markers. |
-| `assets/worklog-skeleton.md` | Per-role work-log skeleton with embedded write-protocol. |
-| `assets/discovery-memo.md` | Discovery-round output shape. |
-| `assets/double-diamond-workbook.md` | Double Diamond four-stage workbook. |
-| `assets/hmw-skeleton.md` | HMW brainstorms file. Lives at `brainstorms/NNN-<slug>-requirements.md`. |
-| `assets/jtbd-skeleton.md` | JTBD job-stories file. |
-| `assets/ears-spec-skeleton.md` | EARS spec file. Lives at `specs/NNN-<slug>/spec.md`. |
+| Reference                                    | When to load                                                                          |
+| -------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `references/orchestrator.md`                 | Running the pipeline. Five routes, parallel Phase 2, critic review, deliver.          |
+| `references/write-protocol.md`               | Canonical write-protocol block. Copied into every subagent prompt.                    |
+| `references/frameworks/INDEX.md`             | Routing guide. Discovery and spec decision tables. Composition rules.                 |
+| `references/frameworks/*.md`                 | Per-framework files. One per framework.                                               |
+| `references/methodology/discovery-rounds.md` | Six-phase discovery methodology.                                                      |
+| `references/inference-heuristics.md`         | Signal-to-inference tables for the PRD-route Intent Profile.                          |
+| `references/quality/prd.md`                  | Per-section PRD quality bar. Cross-section consistency checks.                        |
+| `references/roles/product-analyst.md`        | PRD route. Vision, personas, user stories, IA, milestones.                            |
+| `references/roles/system-architect.md`       | PRD route. NFRs, data models, API contracts, edge cases.                              |
+| `references/roles/research-scout.md`         | PRD route. Market context and open questions.                                         |
+| `references/roles/discovery-lead.md`         | Discovery-round route. Problem framing and Double Diamond cadence.                    |
+| `references/roles/hmw-framer.md`             | HMW-only route. Also the hard-dep entry point for erpaval CL-RIGOR fuzzy.             |
+| `references/roles/jtbd-interviewer.md`       | JTBD-only route. Job stories from PM-provided source material.                        |
+| `references/roles/ears-specifier.md`         | EARS-only route. Also the hard-dep entry point for erpaval CL-RIGOR contract-unclear. |
+| `references/roles/prd-synthesizer.md`        | PRD route Phase 3. Composes the final PRD from three parallel work logs.              |
+| `references/roles/discovery-critic.md`       | Phase 3.5 critic. Rubric-graded review of any synthesized artifact.                   |
+| `assets/prd-template.md`                     | 15-section PRD skeleton with `[FILL]` markers.                                        |
+| `assets/worklog-skeleton.md`                 | Per-role work-log skeleton with embedded write-protocol.                              |
+| `assets/discovery-memo.md`                   | Discovery-round output shape.                                                         |
+| `assets/double-diamond-workbook.md`          | Double Diamond four-stage workbook.                                                   |
+| `assets/hmw-skeleton.md`                     | HMW brainstorms file. Lives at `brainstorms/NNN-<slug>-requirements.md`.              |
+| `assets/jtbd-skeleton.md`                    | JTBD job-stories file.                                                                |
+| `assets/ears-spec-skeleton.md`               | EARS spec file. Lives at `specs/NNN-<slug>/spec.md`.                                  |
 
 # Product discovery
 
@@ -98,13 +98,13 @@ stuck-detection recovery live in `references/orchestrator.md`.
 
 ## When to run which route
 
-| User signal | Route | Primary output |
-| --- | --- | --- |
-| "write a PRD", "draft requirements", one-sentence idea | PRD | `{product-slug}-prd.md`, 15 sections |
-| "brainstorm a product", "run discovery", "think through this" | Discovery round | `discovery-memo.md` |
-| "turn these notes into HMW", "reframe this" | HMW-only | `brainstorms/NNN-{{ slug }}-requirements.md` |
-| "spec this for Kiro or Spec Kit", "write EARS ACs" | EARS-only | `specs/NNN-{{ slug }}/spec.md` |
-| "write job stories for [segment] from these tickets" | JTBD-only | `jtbd-job-stories.md` |
+| User signal                                                   | Route           | Primary output                               |
+| ------------------------------------------------------------- | --------------- | -------------------------------------------- |
+| "write a PRD", "draft requirements", one-sentence idea        | PRD             | `{product-slug}-prd.md`, 15 sections         |
+| "brainstorm a product", "run discovery", "think through this" | Discovery round | `discovery-memo.md`                          |
+| "turn these notes into HMW", "reframe this"                   | HMW-only        | `brainstorms/NNN-{{ slug }}-requirements.md` |
+| "spec this for Kiro or Spec Kit", "write EARS ACs"            | EARS-only       | `specs/NNN-{{ slug }}/spec.md`               |
+| "write job stories for [segment] from these tickets"          | JTBD-only       | `jtbd-job-stories.md`                        |
 
 Default-in-doubt: PRD route. It absorbs the most source-material shapes,
 and the three-role parallel research pattern is the skill's strongest lane.

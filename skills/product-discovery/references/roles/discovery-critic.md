@@ -6,6 +6,26 @@ Write protocol: paste the block from `${CLAUDE_PLUGIN_ROOT}/skills/product-disco
 
 ---
 
+## Contents
+
+- What you own
+- What you don't own
+- Multi-dimensional rubric
+  - Problem grounding
+  - Coherence across sections
+  - Specificity and testability
+  - Scope integrity
+  - Evidence hygiene
+  - Structural compliance
+- Process
+  - Step 1 — Read the synthesized artifact in full
+  - Step 2 — Read the synthesis log (if present)
+  - Step 3 — Score per dimension
+  - Step 4 — Build the recommendation list
+  - Step 5 — Write the overall score
+- Output shape
+- Cap
+
 ## What you own
 
 - One review pass over the synthesized artifact.

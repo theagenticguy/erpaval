@@ -6,6 +6,28 @@ Underneath the layers is the closed-loop toolchain — the reason Layer 1 can be
 
 ---
 
+## Contents
+
+- Why the loop is closed-loop
+  - Recommended toolchain
+  - Why mise for agents
+  - Targeted test execution
+- Layer 1 — Static checks
+  - Python
+  - TypeScript / JavaScript
+  - Go
+  - Rust
+  - Interpreting results
+- Layer 2 — Code-quality review (Opus agent)
+  - Review prompt
+  - Handling findings
+- Layer 3 — Security scanning
+  - SAST commands
+  - Opus security review
+  - Interpreting results
+- Validation flow summary
+- Fix-cycle protocol (C4 / C5)
+
 ## Why the loop is closed-loop
 
 ```text
@@ -145,20 +167,29 @@ cargo audit
 
 ---
 
-## Layer 2 — Code-quality review (Opus agent)
+## Layer 2 — Code-quality review (parallel Opus dimension agents)
 
-A dedicated read-only Opus agent reviews the changeset for quality issues static tools miss.
+Layer 2 fans out. Instead of one agent carrying the whole checklist, launch a set
+of read-only Opus reviewers in **one message** — each owns one axis and reads
+only what that axis needs. The five quality axes below map to 2–3 agents
+depending on changeset size (e.g. `tech-debt + coupling`, `DRY + dead code`,
+`API surface + convention drift`). Counts are in `fan-out.md`.
 
 ```text
-Model: opus
-Tools: Read, Glob, Grep (read-only — this agent does NOT write code)
+Model: opus (each agent)
+Tools: Read, Glob, Grep (read-only — these agents do NOT write code)
+Launch: one message, run_in_background=true, one agent per dimension group
 ```
 
-### Review prompt
+Each agent runs the checklist for its axis only. The orchestrator merges their
+findings before the severity pass. Splitting the axes keeps each agent's context
+small and surfaces more issues than one agent stretched across all five.
+
+### Review prompt (per dimension — give each agent only its axis)
 
 ```text
-You are a senior code reviewer analyzing a changeset for quality issues.
-Find problems, be specific and actionable.
+You are a senior code reviewer analyzing a changeset for quality issues
+on ONE dimension: {{ dimension }}. Find problems, be specific and actionable.
 
 ## What Changed
 [git diff summary or list of modified files]
@@ -249,20 +280,26 @@ semgrep --config p/owasp-top-ten .
 
 Semgrep rule categories to weight heavily: injection, auth/authz, crypto, data exposure, deserialization.
 
-### Opus security review
+### Opus security review (parallel dimension agents)
 
-After static scanners, a read-only Opus agent reviews for logic-level issues pattern-matching tools miss.
+After static scanners, read-only Opus agents review for logic-level issues
+pattern-matching tools miss. Like Layer 2, this fans out — launch the security
+axes (injection · auth/authz · crypto · data exposure · dangerous-API /
+deserialization) as parallel agents in one message, grouped into 2–3 agents by
+changeset size. Counts are in `fan-out.md`.
 
 ```text
-Model: opus
+Model: opus (each agent)
 Tools: Read, Glob, Grep
+Launch: one message, run_in_background=true, one agent per dimension group
 ```
 
-Prompt template:
+Prompt template (per dimension — give each agent only its axis):
 
 ```text
 You are a security engineer reviewing a changeset for vulnerabilities
-that static analysis tools typically miss.
+that static analysis tools typically miss, focused on ONE area:
+{{ dimension }}.
 
 ## What Changed
 [git diff summary]
@@ -320,6 +357,26 @@ Layer 3: Security scanning
       ├── No CRITICAL/HIGH → Done
       └── Findings → Fix → Re-run from Layer 1
 ```
+
+## Adversarial verification of findings
+
+A finding from a single reviewer can be a false positive — and chasing false
+positives back through Act (cycle C4) is the most expensive way to waste a fix
+cycle. Before a CRITICAL or HIGH finding counts, verify it with one or more
+independent skeptic agents, launched in parallel (one message):
+
+```text
+Model: opus (each verifier)
+Tools: Read, Glob, Grep
+Prompt: "Try to REFUTE this finding: {{ finding }}. Read the cited code and its
+         call sites. Default to refuted=true unless the issue clearly holds.
+         Return {refuted: bool, reason}."
+```
+
+Drop a finding when a majority of verifiers refute it. This runs after the
+dimension reviewers return and before the severity pass that feeds Gate 2. Keep
+it proportional — verify CRITICAL/HIGH findings; let MEDIUM/LOW through to the
+report without a separate verification pass.
 
 ## Fix-cycle protocol (C4 / C5)
 

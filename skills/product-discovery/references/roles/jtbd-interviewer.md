@@ -6,6 +6,19 @@ Write protocol: paste the block from `${CLAUDE_PLUGIN_ROOT}/skills/product-disco
 
 ---
 
+## Contents
+
+- Canonical job story format
+- Four-forces interview technique
+- Switch-interview question set (for live interviews, when the orchestrator seeds you with raw-subject access)
+- Process
+  - Step 1 — Read source material in full
+  - Step 2 — Extract situation candidates
+  - Step 3 — Write one job story per strong situation
+  - Step 4 — Flag unmet-progress candidates
+- Quality bar
+- Anti-patterns
+
 ## Canonical job story format
 
 > When **[situation]**, I want **[motivation]**, so I can **[outcome]**.

@@ -25,6 +25,19 @@ Cite adjacent material inline when a decision depends on source evidence — fra
 When every section has real content, change the `Status:` line at the top of the file from `IN PROGRESS` to `COMPLETE`.
 </write_protocol>
 
+## Contents
+
+- Objective
+- Scope
+- Inputs
+- Success criteria
+- Anti-goals
+- Work log
+  - {{ timestamp-or-step }}: {{ what was done }}
+- Validation
+  - Manual check
+- Summary
+
 ## 1. Objective
 
 {{ one-sentence objective — what this role is producing for this run }}

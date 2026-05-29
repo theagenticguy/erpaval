@@ -20,101 +20,101 @@ namespacing, Stop-hook re-prompt channel, built-in `Explore` subagent, and
 
 ### Skills
 
-| Capability | Status |
-| --- | --- |
-| Skill bundle (workflow knowledge) | 1:1 |
-| Skill subfolders (3 renames) | 1:1 |
-| Skill triggering (auto + slash command) | 1:1 |
-| Skill argument substitution | 1:1 |
-| Plugin namespacing | gap |
-| Plugin manifest | gap |
-| Plugin marketplace | partial |
+| Capability                              | Status  |
+| --------------------------------------- | ------- |
+| Skill bundle (workflow knowledge)       | 1:1     |
+| Skill subfolders (3 renames)            | 1:1     |
+| Skill triggering (auto + slash command) | 1:1     |
+| Skill argument substitution             | 1:1     |
+| Plugin namespacing                      | gap     |
+| Plugin manifest                         | gap     |
+| Plugin marketplace                      | partial |
 
 ### Subagents
 
-| Capability | Status |
-| --- | --- |
-| Subagent definition (4 parallel cap) | 1:1 |
-| Subagent invocation | 1:1 |
-| Subagent return channel | 1:1 |
-| Subagent allowlist | 1:1 |
+| Capability                           | Status |
+| ------------------------------------ | ------ |
+| Subagent definition (4 parallel cap) | 1:1    |
+| Subagent invocation                  | 1:1    |
+| Subagent return channel              | 1:1    |
+| Subagent allowlist                   | 1:1    |
 
 ### Hooks
 
-| Capability | Status |
-| --- | --- |
-| SessionStart → agentSpawn | 1:1 |
-| PostToolUse → postToolUse | 1:1 |
-| Stop → stop | 1:1, channel-different |
-| PreToolUse, UserPromptSubmit | 1:1 |
+| Capability                                         | Status                 |
+| -------------------------------------------------- | ---------------------- |
+| SessionStart → agentSpawn                          | 1:1                    |
+| PostToolUse → postToolUse                          | 1:1                    |
+| Stop → stop                                        | 1:1, channel-different |
+| PreToolUse, UserPromptSubmit                       | 1:1                    |
 | SessionEnd, SubagentStop, PreCompact, Notification | gap, unused by erpaval |
-| Hook config location | partial |
-| Plugin-root env var | gap, shimmed |
+| Hook config location                               | partial                |
+| Plugin-root env var                                | gap, shimmed           |
 
 ### MCP
 
-| Capability | Status |
-| --- | --- |
-| MCP config location | 1:1 |
-| MCP schema | 1:1 |
+| Capability          | Status |
+| ------------------- | ------ |
+| MCP config location | 1:1    |
+| MCP schema          | 1:1    |
 
 ### Task management
 
-| Capability | Status |
-| --- | --- |
-| Task list | partial, no deps |
-| Plan / spec mode | partial |
+| Capability       | Status           |
+| ---------------- | ---------------- |
+| Task list        | partial, no deps |
+| Plan / spec mode | partial          |
 
 ### Tools
 
-| Capability | Status |
-| --- | --- |
-| Read, Write, Bash, Glob, Grep | 1:1 |
-| WebFetch, WebSearch | 1:1 |
-| Edit | partial, no separate tool |
+| Capability                    | Status                    |
+| ----------------------------- | ------------------------- |
+| Read, Write, Bash, Glob, Grep | 1:1                       |
+| WebFetch, WebSearch           | 1:1                       |
+| Edit                          | partial, no separate tool |
 
 ### Settings and steering
 
-| Capability | Status |
-| --- | --- |
-| User settings file | 1:1 |
-| Per-project settings | gap |
-| Steering, AGENTS.md | 1:1 |
+| Capability           | Status |
+| -------------------- | ------ |
+| User settings file   | 1:1    |
+| Per-project settings | gap    |
+| Steering, AGENTS.md  | 1:1    |
 
 ## Concrete file mapping
 
 ### Top-level
 
-| Claude Code | Kiro |
-| --- | --- |
+| Claude Code                  | Kiro                                    |
+| ---------------------------- | --------------------------------------- |
 | `.claude-plugin/plugin.json` | `kiro/AGENTS.md` plus `kiro/install.sh` |
-| `.mcp.json` | `kiro/settings/mcp.json` |
-| `CLAUDE.md` | `kiro/AGENTS.md` |
+| `.mcp.json`                  | `kiro/settings/mcp.json`                |
+| `CLAUDE.md`                  | `kiro/AGENTS.md`                        |
 
 ### Agents
 
-| Claude Code | Kiro |
-| --- | --- |
+| Claude Code            | Kiro                                  |
+| ---------------------- | ------------------------------------- |
 | `agents/researcher.md` | `kiro/agents/erpaval-researcher.json` |
-| Built-in `Explore` | `kiro/agents/erpaval-explorer.json` |
+| Built-in `Explore`     | `kiro/agents/erpaval-explorer.json`   |
 
 ### Hooks
 
-| Claude Code | Kiro |
-| --- | --- |
-| `hooks/hooks.json` | `hooks` field in orchestrator JSON |
-| `hooks/framework.py` | `kiro/hooks/framework.py`, 5 events |
-| `hooks/session_start_bootstrap.py` | `kiro/hooks/kiro_session_start_bootstrap.py` |
-| `hooks/validate_packet.py` | `kiro/hooks/kiro_validate_packet.py` |
-| `hooks/compound_nudge.py` | `kiro/hooks/kiro_compound_nudge.py`, advisory |
+| Claude Code                        | Kiro                                          |
+| ---------------------------------- | --------------------------------------------- |
+| `hooks/hooks.json`                 | `hooks` field in orchestrator JSON            |
+| `hooks/framework.py`               | `kiro/hooks/framework.py`, 5 events           |
+| `hooks/session_start_bootstrap.py` | `kiro/hooks/kiro_session_start_bootstrap.py`  |
+| `hooks/validate_packet.py`         | `kiro/hooks/kiro_validate_packet.py`          |
+| `hooks/compound_nudge.py`          | `kiro/hooks/kiro_compound_nudge.py`, advisory |
 
 ### Skill subfolders
 
-| Claude Code | Kiro |
-| --- | --- |
+| Claude Code                  | Kiro                              |
+| ---------------------------- | --------------------------------- |
 | `skills/erpaval/references/` | `kiro/skills/erpaval/references/` |
-| `skills/erpaval/templates/` | `kiro/skills/erpaval/assets/` |
-| `skills/erpaval/tools/` | `kiro/skills/erpaval/scripts/` |
+| `skills/erpaval/templates/`  | `kiro/skills/erpaval/assets/`     |
+| `skills/erpaval/tools/`      | `kiro/skills/erpaval/scripts/`    |
 
 ## Gap shims
 

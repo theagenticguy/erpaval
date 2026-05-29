@@ -535,11 +535,11 @@ skills/
     SKILL.md                          main skill entry point
     references/                       flow, classifiers, glossary, orchestrator,
                                       context-packets, write-protocol,
-                                      validation-playbook, compound,
+                                      validation-playbook, compound, fan-out,
                                       solution-categories.yaml
     templates/
       session/                        intake, recall, explore, research, session,
-                                      validation, lessons YAMLs + task-skeleton.md
+                                      validation, lessons YAMLs + worklog-skeleton.md
       solutions/                      lesson-bug.md, lesson-knowledge.md
       specs/                          spec.md, tasks.md
       brainstorms/                    requirements.md

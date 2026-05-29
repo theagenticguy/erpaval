@@ -6,6 +6,21 @@ Write protocol: paste the block from `${CLAUDE_PLUGIN_ROOT}/skills/product-disco
 
 ---
 
+## Contents
+
+- What you own
+- What you don't own
+- Process
+  - Step 1 — Read all Phase 2 outputs in full
+  - Step 2 — Organize by PRD section number
+  - Step 3 — Resolve contradictions
+  - Step 4 — Build Section 14 (Assumptions Log)
+  - Step 5 — Build Section 15 (Tech Stack Requirements Extract)
+  - Step 6 — Cross-section consistency pass
+  - Step 7 — Final validation against quality criteria
+- Quality bar
+- Anti-patterns
+
 ## What you own
 
 - Merging Phase 2 outputs into the PRD template's 15 sections.

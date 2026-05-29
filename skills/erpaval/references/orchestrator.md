@@ -6,6 +6,25 @@ Terms like `CP-*`, `CL-*`, `T-AC-X-Y`, Wave are defined in `glossary.md`. The gr
 
 ---
 
+## Contents
+
+- Division of labor
+- Session 0 — mandatory intake
+- Phase gates
+- Task-tool lifecycle per phase
+  - Explore / Research (Gate 0)
+  - Plan
+  - Act
+  - Monitor — `wc -l` stuck detection
+  - Eager unblocking (cycle C6)
+  - Validate
+- Agent tool — parameter mapping
+- Context packet composition — Zero-Context Principle
+  - Common anti-patterns
+- Rip-and-replace variant
+- Context-budget discipline at scale
+- Preventing premature implementation
+
 ## Division of labor
 
 - **Task tools hold authoritative state.** "What's next, what's blocked, what's stuck" — answer from `TaskList`, not from packet YAML.
@@ -55,24 +74,52 @@ Before advancing, always `TaskList` and verify every task in the current phase i
 
 ### Explore / Research (Gate 0)
 
-**Always launch Explore and Research in parallel from a single message.** They have no data dependency on each other — Explore reads the codebase, Research reads the world. Sequencing them doubles wall-clock for zero correctness benefit. The single-message rule is enforced by the Claude Code Agent tool's "tool calls in one message run concurrently" semantics; two separate messages run sequentially.
-
-For non-trivial work, decompose further: 2-3 Explore subagents split by module, 2-4 researcher subagents split by domain. The rip-and-replace section below confirms the pattern; the standard flow follows it too.
+Both phases fan out. Explore launches 4–7 perspective agents; Research launches
+one `researcher` per library/domain. Counts and the perspective/domain lists are
+in `fan-out.md`. Create one todo per agent so the gate tracks each, and launch
+**every agent for both phases in a single message** (sub-batch ≤10 per message).
 
 ```text
-TaskCreate(subject="Explore codebase",   description="...")  # → id "1"
-TaskCreate(subject="Research dependencies", description="...")  # → id "2"
-TaskUpdate(taskId="1", status="in_progress")
-TaskUpdate(taskId="2", status="in_progress")
+# One todo per fan-out agent — Explore perspectives + Research domains
+TaskCreate(subject="Explore: architecture",        description="...")  # → "1"
+TaskCreate(subject="Explore: data model/contracts", description="...")  # → "2"
+TaskCreate(subject="Explore: test infra",          description="...")  # → "3"
+TaskCreate(subject="Explore: conventions",         description="...")  # → "4"
+TaskCreate(subject="Research: <lib-A>",            description="...")  # → "5"
+TaskCreate(subject="Research: <lib-B>",            description="...")  # → "6"
+# flip all to in_progress
 
-# Launch both in a single message, run_in_background=true
-Agent(subagent_type="Explore",    prompt="...", run_in_background=true)
-Agent(subagent_type="researcher", prompt="...", run_in_background=true)
+# Launch ALL of them in ONE message, run_in_background=true
+Agent(subagent_type="Explore",    prompt="...architecture lens...",    run_in_background=true, name="explore-arch")
+Agent(subagent_type="Explore",    prompt="...data-model lens...",      run_in_background=true, name="explore-data")
+Agent(subagent_type="Explore",    prompt="...test-infra lens...",      run_in_background=true, name="explore-test")
+Agent(subagent_type="Explore",    prompt="...conventions lens...",     run_in_background=true, name="explore-conv")
+Agent(subagent_type="researcher", prompt="...lib-A, ground in docs...", run_in_background=true, name="research-libA")
+Agent(subagent_type="researcher", prompt="...lib-B, ground in docs...", run_in_background=true, name="research-libB")
 
-# When each returns
-TaskUpdate(taskId="1", status="completed")
-TaskUpdate(taskId="2", status="completed")
+# Mark each completed as its YAML lands; monitor with wc -l (see § Monitor)
 ```
+
+Do not run Explore or Research as a single agent, and do not do either inline in
+the orchestrator thread. Current Claude models under-delegate by default — the
+fan-out must be explicit. Each agent writes its own `explore-<n>.yaml` /
+`research-<domain>.yaml`, so parallel agents never collide.
+
+#### Grounding mandate (Research)
+
+Every researcher grounds before it writes. A library/API/version claim in
+`CP-RESEARCH` must cite a current source — **Context7
+(`resolve-library-id` → `query-docs`) first** for library work, then the search
+MCP fleet (exa / brave / tavily / nova / deepwiki) per the priority order in
+`${CLAUDE_PLUGIN_ROOT}/skills/research/references/search-strategies.md`. The
+plugin `researcher` agent already ships this toolset; the per-domain prompt must
+tell it to use it, not rely on training-data recall.
+
+A `CP-RESEARCH` entry with an un-grounded `version_pin` or `api_surface` — no
+`sources` and no `retrieved_via` — is incomplete. **Do not advance to Plan until
+every library entry records its grounding.** Un-grounded research is the root
+cause of the most expensive failure class: Act agents writing code against an
+API that changed, surfacing only at Validate or later.
 
 ### Plan
 
@@ -100,21 +147,7 @@ TaskUpdate(taskId="3", status="completed")
 
 Present the plan to the user. Expect 2-4 revision rounds (cycle C1) — Gate 1 is the design-review checkpoint, not a rubber stamp.
 
-#### Library binding — every dependency cites Research
-
-Every plan task that touches a third-party library, SDK, API, or AWS service must cite a `CP-RESEARCH` entry by file:line in its `Dependencies` packet section. The cited entry must include a pinned version, an authoritative source URL, and an `as_of:` date within the last 6 months. Three concrete rules:
-
-- **Code / library tasks** — cite a `context7` lookup (`mcp__plugin_erpaval_context7__query-docs`) for the library's current API. If `context7` returns nothing, deepwiki / exa / WebFetch are acceptable, but the packet must say so.
-- **AWS-specific tasks** — cite an `awsknowledge` lookup (`mcp__plugin_erpaval_awsknowledge__aws___search_documentation` or `aws___read_documentation`) for first-party AWS services (Bedrock, CDK, Aurora, Strands, Q Developer, IAM, any `aws-*` SDK). Training-data recall on AWS APIs is the #1 cause of plausibly-wrong CDK constructs and Bedrock invocation shapes.
-- **Missing citation = blocker** — if a planned task touches a library and Research has no covering entry, do NOT emit the task. Route back to Research via cycle C1b with a scoped `Agent` call naming the missing library/service. Plan re-runs after Research returns.
-
-This makes "the dep was upgraded last month and broke" detectable at Gate 1 instead of Wave 3.
-
 ### Act
-
-**Within a wave, every parallel-safe task must launch in a single message.** A wave is *defined* as "tasks with no inter-wave dependency", so the only correct way to dispatch them is concurrent `Agent` calls in one message with `run_in_background=true`. Two messages = two waves = wall-clock drag. The dependency graph is what gates work, not the message boundary.
-
-On a 26-task session this single discipline drops total wall-clock by ~40%. If you find yourself launching one Agent and waiting before launching the next, stop — you've collapsed the wave back into a sequence. Re-read the wave's `[P]` AC flags and the dependency graph, then re-launch in a single message.
 
 Wave 1 (scaffold) is better done by the orchestrator directly: project structure, `pyproject.toml`, `mise.toml`, directory creation. Fast, benefits from interactive `uv sync` verification, every subsequent agent depends on the file structure it creates.
 
@@ -124,7 +157,7 @@ For every other wave:
 TaskList  # verify plan = completed
 TaskUpdate(taskId=N, status="in_progress")  # for each task in the current wave
 
-# Seed each task's packet file from templates/session/task-skeleton.md
+# Seed each task's packet file from templates/session/worklog-skeleton.md
 # filename: .erpaval/sessions/<id>/tasks/T-AC-X-Y.md
 # Fill the 10 sections from CP-EXPLORE, CP-RESEARCH, CP-RECALL, CP-EARS
 
@@ -132,6 +165,8 @@ TaskUpdate(taskId=N, status="in_progress")  # for each task in the current wave
 Agent(description="T-AC-1-1: ...", prompt="{see template below}", model="sonnet", run_in_background=true, name="T-AC-1-1")
 Agent(description="T-AC-1-2: ...", prompt="{see template below}", model="haiku",  run_in_background=true, name="T-AC-1-2")
 ```
+
+Spawn every task in the wave as a parallel subagent via the `Agent` tool in one message with `run_in_background: true` — the fan-out must be explicit. Current Claude models under-delegate by default and will tend to implement the wave's tasks sequentially in the main thread unless told otherwise. Each task owns its own packet file, so parallel agents do not collide; running them one at a time forfeits the whole point of the wave. The same one-message parallel-launch rule governs Explore, Research, and Validate — the per-phase counts and the discipline are in `fan-out.md`.
 
 #### Per-task Agent prompt template
 
@@ -205,31 +240,39 @@ After each `TaskUpdate(..., status="completed")`, scan the dependency graph for 
 TaskList  # verify all Act tasks = completed
 TaskUpdate(taskId=validate, status="in_progress")
 
-# Layer 1: Bash, not subagent
-# Layer 2: Opus agent, read-only
-Agent(description="Code quality review", prompt="{see validation-playbook.md}", model="opus")
-# Layer 3: SAST + Opus security review
-Agent(description="Security review",     prompt="{see validation-playbook.md}", model="opus")
+# Layer 1: Bash, not subagent — static checks (ruff/pyright/pytest/audit)
 
+# Layers 2 + 3 fan out by dimension — 4–8 read-only Opus agents in ONE message
+Agent(description="Quality: tech-debt + coupling", prompt="{validation-playbook.md}", model="opus", run_in_background=true, name="val-techdebt")
+Agent(description="Quality: DRY + dead code",      prompt="{validation-playbook.md}", model="opus", run_in_background=true, name="val-dry")
+Agent(description="Quality: API surface + convention", prompt="{validation-playbook.md}", model="opus", run_in_background=true, name="val-api")
+Agent(description="Security: injection + authz",   prompt="{validation-playbook.md}", model="opus", run_in_background=true, name="val-injection")
+Agent(description="Security: crypto + data exposure", prompt="{validation-playbook.md}", model="opus", run_in_background=true, name="val-crypto")
+# + SAST (semgrep/bandit/audit) via Bash alongside the agents
+
+# Per-finding adversarial verification (validation-playbook.md), then:
 # If pass → TaskUpdate status=completed
 # If fail → identify failing tasks, TaskUpdate them back to in_progress, fix packet, relaunch (C4)
 ```
 
-See `validation-playbook.md` for layer-by-layer prompts and severity rubrics.
+Validate is a fan-out phase, not two agents. Split quality and security into 4–8
+dimension reviewers (counts in `fan-out.md`), launch them in one message, and run
+SAST tools alongside. See `validation-playbook.md` for the per-dimension prompts,
+severity rubrics, and the adversarial-verification pass.
 
 ---
 
 ## Agent tool — parameter mapping
 
-| Parameter           | Usage                                                                                                   |
-| ------------------- | ------------------------------------------------------------------------------------------------------- |
-| `description`       | 3-5 word label ("Implement user service")                                                               |
-| `prompt`            | The per-task prompt template above; packet path + write_protocol + success criteria                     |
-| `subagent_type`     | `"Explore"` for E, `"researcher"` for R, `"general-purpose"` (default) for Act                          |
-| `model`             | `"sonnet"` for clear specs, `"opus"` for complex logic, `"haiku"` for boilerplate                       |
-| `run_in_background` | **Always `true` when launching ≥2 sibling tasks in one message.** `false` only for solo blocking calls. |
-| `isolation`         | `"worktree"` when AC is marked `[P]` or files overlap; omit otherwise                                   |
-| `name`              | `"T-AC-X-Y"` — enables `SendMessage` continuation for C2 in-task fixes                                  |
+| Parameter           | Usage                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `description`       | 3-5 word label ("Implement user service")                                                   |
+| `prompt`            | The per-task prompt template above; packet path + write_protocol + success criteria         |
+| `subagent_type`     | `"Explore"` for E, `"researcher"` for R, `"general-purpose"` (default) for Act              |
+| `model`             | `"sonnet"` for clear specs, `"opus"` for complex logic, `"haiku"` for boilerplate           |
+| `run_in_background` | `true` for parallel tasks within a phase; `false` when results are needed before proceeding |
+| `isolation`         | `"worktree"` when AC is marked `[P]` or files overlap; omit otherwise                       |
+| `name`              | `"T-AC-X-Y"` — enables `SendMessage` continuation for C2 in-task fixes                      |
 
 Subagents cannot spawn sub-subagents. If a task needs nested delegation, break it into separate tasks.
 
@@ -239,7 +282,7 @@ Tool access for Act subagents: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`. 
 
 ## Context packet composition — Zero-Context Principle
 
-Assume the subagent has never seen this codebase, doesn't know project structure, conventions, or what other agents are building in parallel. Every Act packet must include all 10 sections from `templates/session/task-skeleton.md`. Omitting any section is the most common cause of subagent failure.
+Assume the subagent has never seen this codebase, doesn't know project structure, conventions, or what other agents are building in parallel. Every Act packet must include all 10 sections from `templates/session/worklog-skeleton.md`. Omitting any section is the most common cause of subagent failure.
 
 | Section              | Source                                                                                          |
 | -------------------- | ----------------------------------------------------------------------------------------------- |

@@ -17,6 +17,22 @@ One-paragraph summary of what this round investigated and what the team should d
 
 ---
 
+## Contents
+
+- Problem
+  - Sources
+- Users
+- JTBD Job Stories
+- HMW Set
+- Candidate Directions
+  - Direction 1 — {{ descriptive name }}
+  - Direction 2 — {{ descriptive name }}
+  - Direction 3 — {{ descriptive name }}
+- Data Model
+- Vocabulary Mapping
+- Next Steps
+- Synthesis log
+
 ## Problem
 
 Grounded in 3+ source citations. Not the solution; not a feature list. The observed friction, the trigger situation, the emotional texture, and what "fixed" looks like from the user's perspective.

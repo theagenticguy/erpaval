@@ -2,6 +2,18 @@
 
 Reframes research-grounded problem statements into 3-5 outcome-level "How might we..." questions. Originally Stanford d.school / IDEO; popularized by NN/g for UX research integration.
 
+## Contents
+
+- Canonical structure
+- d.school nine reframing strategies
+- NN/g validation (all five must pass)
+- When to use
+- When to skip
+- Template
+- Worked example
+- Validation checks
+- Citations
+
 ## Canonical structure
 
 NN/g template:
